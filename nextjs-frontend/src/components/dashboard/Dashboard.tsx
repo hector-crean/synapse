@@ -1,5 +1,7 @@
+"use client";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Suspense, useMemo } from "react";
+import { CreateRoomParamsType } from "@/lib/client/room/create";
+import { useMemo } from "react";
 import { DocumentViewer } from "./DocumentViewer";
 import { Header } from "./Header";
 import { DocumentFilter, RoomsQueryResult } from "./types";
@@ -7,8 +9,9 @@ import { DocumentFilter, RoomsQueryResult } from "./types";
 interface DashboardProps {
   rooms: RoomsQueryResult;
   filter: Array<DocumentFilter>;
+  createRoom: (params: CreateRoomParamsType) => void;
 }
-const Dashboard = ({ rooms, filter }: DashboardProps) => {
+const Dashboard = ({ rooms, filter, createRoom }: DashboardProps) => {
   const docFilter = useMemo(() => filter?.[0] ?? "all", [filter]);
 
   const filteredRooms = useMemo(
@@ -23,9 +26,11 @@ const Dashboard = ({ rooms, filter }: DashboardProps) => {
         <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
           <Header filter={docFilter} />
           <main className="grid flex-1 items-start gap-4 p-4 sm:px-6 sm:py-0 md:gap-8">
-            <Suspense>
-              <DocumentViewer rooms={filteredRooms} filter={docFilter} />
-            </Suspense>
+            <DocumentViewer
+              rooms={filteredRooms}
+              filter={docFilter}
+              createRoom={createRoom}
+            />
           </main>
         </div>
       </div>

@@ -1,15 +1,16 @@
+"use client";
 import { LiveFlowEdgeType, LiveFlowNodeType } from "@/components/flow/types";
-import { EnsureJson, createClient } from "@liveblocks/client";
+import { BaseUserMeta, EnsureJson, createClient } from "@liveblocks/client";
 import { createRoomContext } from "@liveblocks/react";
 import { WithLiveblocks, liveblocks } from '@liveblocks/zustand';
-import { User } from "@prisma/client";
 import { EdgeChange, NodeChange, applyEdgeChanges, applyNodeChanges } from "@xyflow/react";
 import { create } from "zustand";
 import { FlowState } from "./components/flow/Flow";
 
 
 
-export const ENDPOINT_BASE_URL = "/api/liveblocks";
+export const ENDPOINT_BASE_URL = "/api/liveblocks" as const;
+
 
 
 const client = createClient({
@@ -17,12 +18,19 @@ const client = createClient({
 
 });
 
+
+// Optionally, UserMeta represents static/readonly metadata on each user, as
+// provided by your own custom auth back end (if used). Useful for data that
+// will not change during a session, like a user's name or avatar.
+type UserMeta = BaseUserMeta
+
+
 // Presence represents the properties that exist on every user in the Room
 // and that will automatically be kept in sync. Accessible through the
 // `user.presence` property. Must be JSON-serializable.
 type Presence = {
   cursor: { x: number, y: number } | null,
-  user: Pick<User, 'email' | 'image' | 'name'>
+  user: UserMeta
   // ...
 };
 
@@ -37,10 +45,7 @@ type Storage = {
 
 
 
-// Optionally, UserMeta represents static/readonly metadata on each user, as
-// provided by your own custom auth back end (if used). Useful for data that
-// will not change during a session, like a user's name or avatar.
-type UserMeta = {};
+
 
 // Optionally, the type of custom events broadcast and listened to in this
 // room. Use a union for multiple events. Must be JSON-serializable.

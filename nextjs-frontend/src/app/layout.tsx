@@ -1,4 +1,6 @@
 import { auth } from "@/auth";
+import {} from "@/components";
+import { ReactQueryClientProvider } from "@/components/QueryClientProvider";
 import { Case, Default, Switch } from "@/components/Switch";
 import { AuthenticatedLayout } from "@/layouts/Authenticated/AuthenticatedLayout";
 import { AuthenticationLayout } from "@/layouts/Authentication/Authentication";
@@ -41,16 +43,19 @@ export default async function RootLayout({
       <body className={inter.className}>
         <MantineProvider theme={theme}>
           <SessionProvider session={session}>
-            <Switch>
-              <Case condition={Boolean(session)}>
-                <AuthenticatedLayout session={session}>
-                  {children}
-                </AuthenticatedLayout>
-              </Case>
-              <Default>
-                <AuthenticationLayout />
-              </Default>
-            </Switch>
+            <ReactQueryClientProvider>
+              <Switch>
+                <Case condition={Boolean(session)}>
+                  <AuthenticatedLayout session={session}>
+                    {children}
+                  </AuthenticatedLayout>
+                </Case>
+                <Default>
+                  <AuthenticationLayout />
+                </Default>
+              </Switch>
+              {/* <ReactQueryDevtools initialIsOpen /> */}
+            </ReactQueryClientProvider>
           </SessionProvider>
         </MantineProvider>
       </body>

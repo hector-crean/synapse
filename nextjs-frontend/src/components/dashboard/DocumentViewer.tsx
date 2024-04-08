@@ -1,5 +1,4 @@
-"use server";
-import { liveblocks } from "@/app/api/liveblocks";
+"use client";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -28,22 +27,19 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { File, ListFilter, MoreHorizontal, PlusCircle } from "lucide-react";
+import { CreateRoomParamsType } from "@/lib/client/room/create";
+import { File, ListFilter, MoreHorizontal } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { CreateRoomForm } from "./CreateRoomForm";
 import { DocumentFilter, RoomsQueryResult, docFilters } from "./types";
 
 interface DocumentViewerProps {
   rooms: RoomsQueryResult;
   filter: DocumentFilter;
+  createRoom: (params: CreateRoomParamsType) => void;
 }
-const DocumentViewer = async ({ rooms, filter }: DocumentViewerProps) => {
-  const handleDeleteRoom = async (data: FormData) => {
-    "use server";
-    const id = data.get("roomId") as string;
-    await liveblocks.deleteRoom(id);
-  };
-
+const DocumentViewer = ({ rooms, filter, createRoom }: DocumentViewerProps) => {
   return (
     <Tabs defaultValue={docFilters["all"].id} value={filter}>
       <div className="flex items-center">
@@ -90,21 +86,15 @@ const DocumentViewer = async ({ rooms, filter }: DocumentViewerProps) => {
               Export
             </span>
           </Button>
-          <Button size="sm" className="h-8 gap-1">
-            <PlusCircle className="h-3.5 w-3.5" />
-            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Add Room
-            </span>
-          </Button>
+
+          <CreateRoomForm createRoomQuery={createRoom} />
         </div>
       </div>
       <TabsContent value={filter}>
         <Card>
           <CardHeader>
-            <CardTitle>Documents</CardTitle>
-            <CardDescription>
-              Manage your Documents and view their sales performance.
-            </CardDescription>
+            <CardTitle>Rooms</CardTitle>
+            <CardDescription>Manage your Rooms</CardDescription>
           </CardHeader>
           <CardContent>
             <Table>
@@ -169,14 +159,14 @@ const DocumentViewer = async ({ rooms, filter }: DocumentViewerProps) => {
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <DropdownMenuItem>
-                            <form action={handleDeleteRoom}>
+                            {/* <form action={handleDeleteRoom}>
                               <input
                                 name="roomId"
                                 className="hidden"
                                 value={room.id}
                               />
                               <button type="submit">Delete</button>
-                            </form>
+                            </form> */}
                           </DropdownMenuItem>
                         </DropdownMenuContent>
                       </DropdownMenu>

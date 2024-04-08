@@ -1,10 +1,12 @@
 import { Liveblocks } from "@liveblocks/node";
 
-const SECRET_KEY = process.env.LIVEBLOCKS_SECRET_KEY as string
+const LIVEBLOCKS_SECRET_KEY = process.env.LIVEBLOCKS_SECRET_KEY ?? 'sk_dev_DeSgaxOtliASkZ1DiFF_sM3iUhKYVBSDA53LxPZsdC6NiG6zMDF6jrlW4W-8zbkm' as string
 
 const liveblocks = new Liveblocks({
-    secret: SECRET_KEY
+    secret: LIVEBLOCKS_SECRET_KEY
 });
 
-export { liveblocks };
+export { LIVEBLOCKS_SECRET_KEY, liveblocks };
+
+
 

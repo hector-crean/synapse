@@ -51,14 +51,14 @@ const Avatars = ({ presence, others }: AvatarsProps) => {
     >
       <Avatar
         key={"me"}
-        src={presence.user.image ?? ""}
+        src={presence.user.avatar ?? ""}
         alt={presence.user.name ?? ""}
         color={"red"}
       />
       {others.slice(0, 3).map((user) => (
         <Avatar
           key={user.connectionId}
-          src={user.presence.user.image ?? ""}
+          src={user.presence.user.avatar ?? ""}
           alt={user.presence.user.name ?? ""}
           color={COLORS[user.connectionId % COLORS.length]}
         />
