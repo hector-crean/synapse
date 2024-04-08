@@ -1,3 +1,5 @@
+"use client";
+
 import { Link, RichTextEditor } from "@mantine/tiptap";
 import { Content, useEditor } from "@tiptap/react";
 import styles from "./RichText.module.css";
@@ -43,13 +45,10 @@ const RichText = ({ text, setContent }: RichTextProps) => {
     },
   }) as Editor;
 
-
-
   const postDraftHandler = (draft: Content) => {
-    if (setContent) setContent(draft)
+    if (setContent) setContent(draft);
     setEditing(false);
-
-  }
+  };
 
   return (
     <>
@@ -57,7 +56,6 @@ const RichText = ({ text, setContent }: RichTextProps) => {
         className={styles.rich_text_container}
         onDoubleClick={() => setEditing(true)}
       >
-
         <RichTextEditor
           editor={editor}
           classNames={{
@@ -69,86 +67,85 @@ const RichText = ({ text, setContent }: RichTextProps) => {
         >
           <RichTextEditor.Content />
         </RichTextEditor>
-
       </motion.div>
 
-      {editing && createPortal(
-        <>
-          <div
-            className={styles.modal}
-          >
-            <RichTextEditor
-              editor={editor}
-              classNames={{
-                root: styles.root,
-                content: styles.content,
-                toolbar: styles.toolbar,
-                typographyStylesProvider: styles.typographyStylesProvider,
-              }}
-            >
-              <RichTextEditor.Toolbar sticky stickyOffset={0}>
-                <RichTextEditor.ControlsGroup>
-                  <RichTextEditor.Bold />
-                  <RichTextEditor.Italic />
-                  <RichTextEditor.Underline />
-                  <RichTextEditor.Strikethrough />
-                  <RichTextEditor.ClearFormatting />
-                  <RichTextEditor.Highlight />
-                  <RichTextEditor.Code />
-                </RichTextEditor.ControlsGroup>
+      {editing &&
+        createPortal(
+          <>
+            <div className={styles.modal}>
+              <RichTextEditor
+                editor={editor}
+                classNames={{
+                  root: styles.root,
+                  content: styles.content,
+                  toolbar: styles.toolbar,
+                  typographyStylesProvider: styles.typographyStylesProvider,
+                }}
+              >
+                <RichTextEditor.Toolbar sticky stickyOffset={0}>
+                  <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.Bold />
+                    <RichTextEditor.Italic />
+                    <RichTextEditor.Underline />
+                    <RichTextEditor.Strikethrough />
+                    <RichTextEditor.ClearFormatting />
+                    <RichTextEditor.Highlight />
+                    <RichTextEditor.Code />
+                  </RichTextEditor.ControlsGroup>
 
-                <RichTextEditor.ControlsGroup>
-                  <RichTextEditor.H1 />
-                  <RichTextEditor.H2 />
-                  <RichTextEditor.H3 />
-                  <RichTextEditor.H4 />
-                </RichTextEditor.ControlsGroup>
+                  <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.H1 />
+                    <RichTextEditor.H2 />
+                    <RichTextEditor.H3 />
+                    <RichTextEditor.H4 />
+                  </RichTextEditor.ControlsGroup>
 
-                <RichTextEditor.ControlsGroup>
-                  <RichTextEditor.Blockquote />
-                  <RichTextEditor.Hr />
-                  <RichTextEditor.BulletList />
-                  <RichTextEditor.OrderedList />
-                  <RichTextEditor.Subscript />
-                  <RichTextEditor.Superscript />
-                </RichTextEditor.ControlsGroup>
+                  <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.Blockquote />
+                    <RichTextEditor.Hr />
+                    <RichTextEditor.BulletList />
+                    <RichTextEditor.OrderedList />
+                    <RichTextEditor.Subscript />
+                    <RichTextEditor.Superscript />
+                  </RichTextEditor.ControlsGroup>
 
-                <RichTextEditor.ControlsGroup>
-                  <RichTextEditor.Link />
-                  <RichTextEditor.Unlink />
-                </RichTextEditor.ControlsGroup>
+                  <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.Link />
+                    <RichTextEditor.Unlink />
+                  </RichTextEditor.ControlsGroup>
 
-                <RichTextEditor.ControlsGroup>
-                  <RichTextEditor.AlignLeft />
-                  <RichTextEditor.AlignCenter />
-                  <RichTextEditor.AlignJustify />
-                  <RichTextEditor.AlignRight />
-                </RichTextEditor.ControlsGroup>
+                  <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.AlignLeft />
+                    <RichTextEditor.AlignCenter />
+                    <RichTextEditor.AlignJustify />
+                    <RichTextEditor.AlignRight />
+                  </RichTextEditor.ControlsGroup>
 
-                <RichTextEditor.ControlsGroup>
-                  <RichTextEditor.Undo />
-                  <RichTextEditor.Redo />
-                </RichTextEditor.ControlsGroup>
+                  <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.Undo />
+                    <RichTextEditor.Redo />
+                  </RichTextEditor.ControlsGroup>
 
-                <RichTextEditor.ControlsGroup>
-                  <button onPointerDown={() => postDraftHandler(draft)}>Publish</button>
-                </RichTextEditor.ControlsGroup>
-              </RichTextEditor.Toolbar>
+                  <RichTextEditor.ControlsGroup>
+                    <button onPointerDown={() => postDraftHandler(draft)}>
+                      Publish
+                    </button>
+                  </RichTextEditor.ControlsGroup>
+                </RichTextEditor.Toolbar>
 
-              <RichTextEditor.Content />
-            </RichTextEditor>
-          </div>
-          <div className={styles.background} onPointerDown={() => setEditing(false)} />
-        </>
-        , document.body
-      )}
-
-
-
+                <RichTextEditor.Content />
+              </RichTextEditor>
+            </div>
+            <div
+              className={styles.background}
+              onPointerDown={() => setEditing(false)}
+            />
+          </>,
+          document.body
+        )}
     </>
   );
 };
 
 export { RichText };
 export type { RichTextProps };
-

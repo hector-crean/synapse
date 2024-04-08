@@ -1,3 +1,5 @@
+"use client";
+
 import {
   addEdge,
   Background,
@@ -51,8 +53,6 @@ import { useMyPresence, useOthers } from "@/liveblocks.config";
 import { Cursor } from "../cursor/Cursor";
 import { RichTextNode } from "./nodes/RichTextNode";
 import { LiveFlowEdgeType, LiveFlowNodeType } from "./types";
-
-
 
 type FlowState = {
   nodes: Array<LiveFlowNodeType>;
@@ -284,7 +284,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
       }}
       style={{ width: "100%", height: "100%" }}
     >
-      <NodeContextMenu onCut={() => { }} onCopy={() => { }} onPaste={() => { }}>
+      <NodeContextMenu onCut={() => {}} onCopy={() => {}} onPaste={() => {}}>
         <ReactFlow
           className={styles.flow_wrapper}
           nodes={nodes}
@@ -375,4 +375,3 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
 
 export { Flow };
 export type { FlowProps, FlowState };
-

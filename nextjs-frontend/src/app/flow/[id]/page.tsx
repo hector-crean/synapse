@@ -6,7 +6,6 @@ import { ClientSideSuspense } from "@liveblocks/react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 
-import { Case, Default, Switch } from "@/components/Switch";
 import * as z from "zod";
 import { FlowRoom } from "./FlowRoom";
 
@@ -31,24 +30,27 @@ const Page = () => {
 
   const result = NextAuthSchema.safeParse(data?.user);
 
-  return (
-    <Switch>
-      <Case condition={result.success}>
-        <RoomProvider
-          id={id}
-          initialPresence={{ cursor: null, user: result.data as NextAuthType }}
-          initialStorage={{ nodes: [], edges: [] }}
-        >
-          <ClientSideSuspense fallback={<Loading />}>
-            {() => <FlowRoom id={id} />}
-          </ClientSideSuspense>
-        </RoomProvider>
-      </Case>
-      <Default>
-        <p>Could not parse user</p>
-      </Default>
-    </Switch>
-  );
+  if (result.success) {
+    return (
+      <RoomProvider
+        id={id}
+        initialPresence={{
+          cursor: null,
+          user: {
+            name: result.data.name ?? "Placeholder",
+            avatar: result.data.image ?? "",
+          },
+        }}
+        initialStorage={{ nodes: [], edges: [] }}
+      >
+        <ClientSideSuspense fallback={<Loading />}>
+          {() => <FlowRoom id={id} />}
+        </ClientSideSuspense>
+      </RoomProvider>
+    );
+  } else {
+    return null;
+  }
 };
 
 export default Page;
