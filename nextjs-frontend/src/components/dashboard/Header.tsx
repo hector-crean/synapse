@@ -27,6 +27,7 @@ import {
   ShoppingCart,
   Users2,
 } from "lucide-react";
+import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { DocumentFilter } from "./types";
@@ -140,7 +141,9 @@ const Header = ({ filter }: HeaderProps) => {
           <DropdownMenuItem>Settings</DropdownMenuItem>
           <DropdownMenuItem>Support</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Logout</DropdownMenuItem>
+          <DropdownMenuItem onPointerDown={() => signOut()}>
+            Logout
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </header>

@@ -25,12 +25,10 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   const nextSession = await auth()
   const result = UserSchema.safeParse(nextSession?.user)
 
-  if (!result.success) {
-    // handle error then return
-    console.log(result.error)
-  } else {
-    // do something
+  if (result.success) {
     user = result.data;
+  } else {
+    console.log(result.error)
   }
 
 
@@ -39,6 +37,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   // Get the current user from your database
   // const user = __getUserFromDB__(req);
 
+
+  // const identify = await liveblocks.identifyUser(user.email);
 
 
   // Start an auth session inside your endpoint
@@ -53,7 +53,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   //<organization_id>:<group_id>:<document_id>
   // session.allow(`liveblocks:examples:*`, session.FULL_ACCESS);
-  session.allow(`zustand-flowchart`, session.FULL_ACCESS)
+  session.allow('*', session.FULL_ACCESS)
   // session.allow(`synapse:${user.group}:*`, session.FULL_ACCESS)
   // session.allow(`${user.organization}:*`, session.READ_ACCESS);
   // session.allow(`${user.organization}:${user.group}:*`, session.FULL_ACCESS);

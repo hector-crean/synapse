@@ -18,35 +18,43 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { toast } from "@/components/ui/use-toast";
 import {
   CreateRoomParamsSchema,
   CreateRoomParamsType,
 } from "@/lib/client/room/create";
-import { PermissionEnumType } from "@/lib/types";
+import { RoomTypeSchema } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusCircle } from "lucide-react";
 import { nanoid } from "nanoid";
-import { FormEvent, useState } from "react";
-import { useForm } from "react-hook-form";
-import { MultiSelect } from "../ui/multi-select";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { Input } from "../ui/input";
 const wait = () => new Promise((resolve) => setTimeout(resolve, 1000));
 
 type CreateRoomFormProps = {
-  createRoomQuery: (params: CreateRoomParamsType) => void;
+  createRoomQuery: (params: CreateRoomParamsType) => Promise<void>;
 };
+
 const CreateRoomForm = ({ createRoomQuery }: CreateRoomFormProps) => {
   const [open, setOpen] = useState(false);
 
   const defaultParams: CreateRoomParamsType = {
     id: `room-${nanoid()}`,
-    defaultAccesses: ["room:write", "room:read", "room:presence:write"],
+    defaultAccesses: ["room:write"],
     usersAccesses: {
-      hector: ["room:write"],
+      "hectorcrean@gmail.com": ["room:write"],
     },
-    groupsAccesses: {
-      product: ["room:write"],
+    groupsAccesses: {},
+    metadata: {
+      type: "flow",
     },
   };
 
@@ -55,23 +63,16 @@ const CreateRoomForm = ({ createRoomQuery }: CreateRoomFormProps) => {
     defaultValues: defaultParams,
   });
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
-    form.handleSubmit(
-      (valid) => {
-        createRoomQuery(valid);
-        toast({
-          title: "You submitted the following values:",
-          description: (
-            <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-              <code className="text-white">
-                {JSON.stringify(valid, null, 2)}
-              </code>
-            </pre>
-          ),
-        });
-      },
-      (invalid) => console.log(invalid)
-    )(e);
+  const onValidForm: SubmitHandler<CreateRoomParamsType> = async (data) => {
+    await createRoomQuery(data);
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
     setOpen(false);
   };
 
@@ -98,7 +99,10 @@ const CreateRoomForm = ({ createRoomQuery }: CreateRoomFormProps) => {
         </DialogHeader>
 
         <Form {...form}>
-          <form onSubmit={onSubmit} className="w-2/3 space-y-6">
+          <form
+            onSubmit={form.handleSubmit(onValidForm)}
+            className="w-2/3 space-y-6"
+          >
             <FormField
               control={form.control}
               name="id"
@@ -114,6 +118,34 @@ const CreateRoomForm = ({ createRoomQuery }: CreateRoomFormProps) => {
               )}
             />
             <FormField
+              control={form.control}
+              name="metadata.type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Type</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a room type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(RoomTypeSchema.Values).map((roomType) => (
+                        <SelectItem key={roomType} value={roomType}>
+                          {roomType}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <FormDescription></FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            {/* <FormField
               control={form.control}
               name="defaultAccesses"
               render={({ field }) => (
@@ -136,7 +168,7 @@ const CreateRoomForm = ({ createRoomQuery }: CreateRoomFormProps) => {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
             {/* <FormField
           control={form.control}
           name="groupsAccesses"

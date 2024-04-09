@@ -1,9 +1,19 @@
 import { LIVEBLOCKS_SECRET_KEY } from "@/app/api/liveblocks";
-import { RoomInfoType } from "@/lib/types";
+import { RoomInfoSchema } from "@/lib/types";
 import axios from 'axios';
+import { z } from 'zod';
 
 
-async function getRooms(): Promise<RoomInfoType> {
+const RoomsQueryResultSchema = z.object({
+    nextPage: z.string().nullable(),
+    nextCursor: z.string().nullable(),
+    data: z.array(RoomInfoSchema)
+})
+
+type RoomsQueryResultType = z.infer<typeof RoomsQueryResultSchema>;
+
+
+async function getRooms(): Promise<RoomsQueryResultType> {
 
     return axios
         .get(`https://api.liveblocks.io/v2/rooms`, {

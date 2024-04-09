@@ -2,6 +2,7 @@
 import * as z from 'zod';
 
 
+// Permission must be either [], ['room:write'] or ['room:read', 'room:presence:write']
 
 
 const PermissionEnumSchema = z.enum(["room:write", "room:read", "room:presence:write"])
@@ -13,7 +14,11 @@ type RoomPermissionType = z.infer<typeof RoomPermissionSchema>;
 const RoomAccessesSchema = z.record(RoomPermissionSchema);
 type RoomAccessesType = z.infer<typeof RoomAccessesSchema>;
 
-const RoomMetadataSchema = z.record(z.union([z.string(), z.array(z.string())]));
+
+const RoomTypeSchema = z.enum(["text", "whiteboard", "flow"])
+type RoomType = z.infer<typeof RoomTypeSchema>
+
+const RoomMetadataSchema = z.object({ type: RoomTypeSchema })
 type RoomMetadataType = z.infer<typeof RoomMetadataSchema>;
 
 
@@ -25,7 +30,7 @@ const RoomInfoSchema = z.object({
     defaultAccesses: RoomPermissionSchema,
     usersAccesses: RoomAccessesSchema,
     groupsAccesses: RoomAccessesSchema,
-    metadata: RoomMetadataSchema.optional()
+    metadata: RoomMetadataSchema
 })
 type RoomInfoType = z.infer<typeof RoomInfoSchema>;
 
@@ -44,6 +49,6 @@ type RoomUserType<InfoType extends z.ZodType<any, any>> = z.TypeOf<ReturnType<ty
 
 
 
-export { PermissionEnumSchema, RoomAccessesSchema, RoomInfoSchema, RoomPermissionSchema, RoomUserSchema };
-export type { PermissionEnumType, RoomAccessesType, RoomInfoType, RoomMetadataType, RoomPermissionType, RoomUserType };
+export { PermissionEnumSchema, RoomAccessesSchema, RoomInfoSchema, RoomPermissionSchema, RoomTypeSchema, RoomUserSchema };
+export type { PermissionEnumType, RoomAccessesType, RoomInfoType, RoomMetadataType, RoomPermissionType, RoomType, RoomUserType };
 

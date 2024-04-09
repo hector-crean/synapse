@@ -1,6 +1,13 @@
 import "next-auth";
 import { DefaultSession } from "next-auth";
-import { User } from "../types";
+
+
+interface User {
+  id?: string
+  name?: string | null
+  email?: string | null
+  image?: string | null
+}
 
 declare module "next-auth" {
   /**

@@ -40,11 +40,12 @@ const Page = ({ params }: QueryParams) => {
     return "An error has occurred: " + roomInfoQuery.error.message;
 
   if (roomInfoQuery.data) {
+    console.log(roomInfoQuery.data);
     return (
       <Dashboard
-        rooms={{ nextPage: null, nextCursor: null, data: [] }}
-        filter={params.filter}
-        createRoom={createRoomMutation.mutate}
+        rooms={roomInfoQuery.data}
+        filters={params.filter}
+        createRoom={createRoomMutation.mutateAsync}
       />
     );
   } else {
