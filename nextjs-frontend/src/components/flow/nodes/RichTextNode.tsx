@@ -1,6 +1,5 @@
 import {
   Handle,
-  Node,
   NodeProps,
   NodeResizer,
   Position,
@@ -10,21 +9,16 @@ import styles from "./RichTextNode.module.css";
 
 import { RichText } from "@/components/rich-text/RichText";
 import { Content } from "@tiptap/react";
+import { ConcreteNode } from "../types";
 
-const MIN_NODE_WIDTH = 300;
-const MIN_NODE_HEIGHT = 300;
 type RichTextNodeData = {
   text: Content;
 };
 
-type RichTextNodeType = Node<RichTextNodeData, "RichTextNode">;
+type RichTextNodeType = ConcreteNode<RichTextNodeData, "RichTextNode">;
 
 const RichTextNode = (props: NodeProps<RichTextNodeType>) => {
   const instance = useReactFlow();
-
-  // useEffect(() => {
-  //   instance.updateNode(props.id, { ...props, dragHandle: `.${styles.drag_handle}` })
-  // }, [])
 
   const setContentHandler = (draft: Content) => {
     const data: RichTextNodeData = {

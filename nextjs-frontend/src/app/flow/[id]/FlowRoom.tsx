@@ -27,8 +27,8 @@ const Cursors = ({ others }: CursorsProps) => {
     .map(({ connectionId, presence }) => (
       <Cursor
         key={connectionId}
-        x={presence.cursor?.x ?? 0}
-        y={presence.cursor?.y ?? 0}
+        user={presence.user}
+        position={presence.cursor ?? { x: 0, y: 0 }}
         color="red"
       />
     ));
@@ -119,7 +119,7 @@ const FlowRoom = ({ id }: FlowRoomProps) => {
         overlay={<></>}
         sidebar={<Sidebar />}
         footer={<></>}
-        cursors={<Cursors others={others} />}
+        cursors={<></>}
         main={
           <Flow
             id={id}

@@ -1,6 +1,5 @@
 import {
   Handle,
-  Node,
   NodeProps,
   NodeResizer,
   Position,
@@ -9,13 +8,14 @@ import {
 
 import Shape from "../shape";
 import { type ShapeType } from "../shape/types";
+import { ConcreteNode } from "../types";
 
 type ShapeNodeData = {
   type: ShapeType;
   color: string;
 };
 
-type ShapeNodeType = Node<ShapeNodeData, "ShapeNode">;
+type ShapeNodeType = ConcreteNode<ShapeNodeData, "ShapeNode">;
 
 function ShapeNode({
   id,

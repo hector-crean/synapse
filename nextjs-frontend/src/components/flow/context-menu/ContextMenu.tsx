@@ -1,24 +1,47 @@
 import * as ContextMenu from "@radix-ui/react-context-menu";
 import { ChevronRightIcon } from "@radix-ui/react-icons";
-import { XYPosition } from "@xyflow/react";
-import { ReactNode } from "react";
+import { Node, XYPosition } from "@xyflow/react";
+import { ReactNode, useState } from "react";
+import { nodeTypes } from "../Flow";
+import { defaultNode } from "../default-nodes";
+import { FlowNodeType } from "../types";
 import styles from "./ContextMenu.module.css";
 
 interface NodeContextMenuProps {
   onCut: VoidFunction;
   onCopy: VoidFunction;
   onPaste: (clipboard?: XYPosition) => void;
+  onAddNodes: (nodes: Array<Node>) => void;
+  screenToFlowPosition: (
+    clientPosition: XYPosition,
+    options?:
+      | {
+          snapToGrid: boolean;
+        }
+      | undefined
+  ) => XYPosition;
   children: ReactNode;
+  lastClickPosition: XYPosition;
 }
 const NodeContextMenu = ({
   children,
   onCopy,
   onCut,
   onPaste,
+  onAddNodes,
+  screenToFlowPosition,
 }: NodeContextMenuProps) => {
+  const [pos, setPos] = useState<XYPosition>({ x: 0, y: 0 });
+
+  console.log(pos);
   return (
     <ContextMenu.Root>
-      <ContextMenu.Trigger className={styles.ContextMenuTrigger}>
+      <ContextMenu.Trigger
+        className={styles.ContextMenuTrigger}
+        onPointerDown={(e) =>
+          setPos(screenToFlowPosition({ x: e.clientX, y: e.clientY }))
+        }
+      >
         {children}
       </ContextMenu.Trigger>
       <ContextMenu.Portal>
@@ -43,7 +66,7 @@ const NodeContextMenu = ({
           </ContextMenu.Item>
           <ContextMenu.Sub>
             <ContextMenu.SubTrigger className={styles.ContextMenuSubTrigger}>
-              More Tools
+              Add Node
               <div className={styles.RightSlot}>
                 <ChevronRightIcon />
               </div>
@@ -54,15 +77,21 @@ const NodeContextMenu = ({
                 sideOffset={2}
                 alignOffset={-5}
               >
-                <ContextMenu.Item className={styles.ContextMenuItem}>
-                  Save Page As… <div className={styles.RightSlot}>⌘+S</div>
-                </ContextMenu.Item>
-                <ContextMenu.Item className={styles.ContextMenuItem}>
-                  Create Shortcut…
-                </ContextMenu.Item>
-                <ContextMenu.Item className={styles.ContextMenuItem}>
-                  Name Window…
-                </ContextMenu.Item>
+                {Object.keys(nodeTypes).map((node) => (
+                  <ContextMenu.Item
+                    key={node}
+                    className={styles.ContextMenuItem}
+                    onClick={(e) => {
+                      onAddNodes([
+                        defaultNode(node as FlowNodeType["type"], pos),
+                      ]);
+                    }}
+                  >
+                    {node}
+                    <div className={styles.RightSlot}>⌘+{node.charAt(0)}</div>
+                  </ContextMenu.Item>
+                ))}
+
                 <ContextMenu.Separator
                   className={styles.ContextMenuSeparator}
                 />

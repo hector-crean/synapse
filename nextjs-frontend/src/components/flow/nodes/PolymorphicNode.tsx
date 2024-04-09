@@ -1,20 +1,20 @@
-import { Handle, Node, NodeProps, Position } from "@xyflow/react";
+import { Handle, NodeProps, Position } from "@xyflow/react";
 import { useState } from "react";
 import styles from "./PolymorphicNode.module.css";
 
 import { Renderable, render } from "@/components";
 import { motion } from "framer-motion";
+import { ConcreteNode } from "../types";
 
 type PolymorphicNodeData = {
   blocks: Array<Renderable>;
   accentColor: string;
 };
 
-type PolymorphicNodeType = Node<PolymorphicNodeData, "PolymorphicNode">;
+type PolymorphicNodeType = ConcreteNode<PolymorphicNodeData, "PolymorphicNode">;
 
 const PolymorphicNode = (props: NodeProps<PolymorphicNodeType>) => {
   const [hovered, setHovered] = useState(false);
-
 
   return (
     <motion.div

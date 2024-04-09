@@ -25,16 +25,18 @@ import {
   ReactFlow,
   SelectionMode,
   useReactFlow,
+  useStore as useReactFlowStore,
+  XYPosition,
 } from "@xyflow/react";
 import { motion } from "framer-motion";
 import {
+  MouseEventHandler,
   PointerEventHandler,
   useCallback,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { v4 as uuidv4 } from "uuid";
 import { NodeContextMenu } from "./context-menu/ContextMenu";
 import { Controls } from "./control-bar/ControlBar";
 import { PolymorphicEdge } from "./edges/PolymorphicEdge";
@@ -48,11 +50,20 @@ import { ShapeNode } from "./nodes/ShapeNode";
 
 import "@xyflow/react/dist/style.css";
 
-import { COLORS } from "@/color";
 import { useMyPresence, useOthers } from "@/liveblocks.config";
-import { Cursor } from "../cursor/Cursor";
+import { LiveCursors } from "./cursors/Cursor";
 import { RichTextNode } from "./nodes/RichTextNode";
 import { LiveFlowEdgeType, LiveFlowNodeType } from "./types";
+
+const nodeTypes: NodeTypes = {
+  PolymorphicNode: PolymorphicNode,
+  ShapeNode: ShapeNode,
+  RichTextNode: RichTextNode,
+} as const;
+
+const edgeTypes: EdgeTypes = {
+  PolymorphicEdge: PolymorphicEdge,
+} as const;
 
 type FlowState = {
   nodes: Array<LiveFlowNodeType>;
@@ -92,6 +103,8 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
   onEdgesChange,
   onNodesChange,
 }: FlowProps<NodeType, EdgeType>) {
+  const rfDomNode = useReactFlowStore((state) => state.domNode);
+
   const {
     fitView,
     screenToFlowPosition,
@@ -99,17 +112,11 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
     addEdges,
     addNodes,
     deleteElements,
+    getViewport,
+    flowToScreenPosition,
   } = useReactFlow();
 
-  // useEffect(() => {
-  //   setNodes(initialNodes);
-  //   setEdges(initialEdges);
-  // }, [initialNodes, initialEdges]);
-  // const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  // const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
   const [layoutComputed, setLayoutComputed] = useState(true);
-
   const [isSelectable, setIsSelectable] = useState<boolean>(true);
   const [isDraggable, setIsDraggable] = useState<boolean>(true);
   const [isConnectable, setIsConnectable] = useState<boolean>(true);
@@ -125,22 +132,6 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
   const [captureZoomScroll, setCaptureZoomScroll] = useState<boolean>(false);
   const [captureElementClick, setCaptureElementClick] =
     useState<boolean>(false);
-
-  const nodeTypes: NodeTypes = useMemo(
-    () => ({
-      PolymorphicNode: PolymorphicNode,
-      ShapeNode: ShapeNode,
-      RichTextNode: RichTextNode,
-    }),
-    []
-  );
-
-  const edgeTypes: EdgeTypes = useMemo(
-    () => ({
-      PolymorphicEdge: PolymorphicEdge,
-    }),
-    []
-  );
 
   const layoutOptions: LayoutOptions = useMemo(
     () => ({
@@ -223,16 +214,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
 
   const onAddNodes = useCallback(
     (nodes: Array<Node>) => {
-      const newNodes = nodes.map((node) => ({
-        ...node,
-        id: uuidv4(),
-        position: {
-          x: 0,
-          y: 0,
-        },
-      }));
-
-      addNodes(newNodes);
+      addNodes(nodes);
     },
     [addNodes]
   );
@@ -250,27 +232,37 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
    */
   const others = useOthers();
 
-  const onPointerMove: PointerEventHandler = useCallback(
-    (event) => {
-      const position = screenToFlowPosition({
-        x: event.clientX,
-        y: event.clientY,
-      });
+  const [lastClickPosition, setLastClickPosition] = useState<XYPosition>({
+    x: 0,
+    y: 0,
+  });
 
-      // Update the user cursor position on every pointer move
-      updateMyPresence({
-        cursor: position,
-      });
-    },
-    [updateMyPresence]
-  );
+  const onPaneClick: MouseEventHandler = (event) => {
+    const position = screenToFlowPosition({
+      x: event.clientX,
+      y: event.clientY,
+    });
+
+    setLastClickPosition(position);
+  };
+
+  const [cursorPosition, setCursorPosition] = useState<XYPosition | null>(null);
 
   const onPointerLeave: PointerEventHandler = useCallback(() => {
     // When the pointer goes out, set cursor to null
-    updateMyPresence({
-      cursor: null,
-    });
-  }, [updateMyPresence]);
+    setCursorPosition(null);
+  }, [setCursorPosition]);
+
+  const onPointerMove: PointerEventHandler = useCallback(
+    (event) => {
+      // Update the user cursor position on every pointer move
+      setCursorPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
+    },
+    [setCursorPosition, screenToFlowPosition]
+  );
 
   return (
     <motion.div
@@ -284,7 +276,14 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
       }}
       style={{ width: "100%", height: "100%" }}
     >
-      <NodeContextMenu onCut={() => {}} onCopy={() => {}} onPaste={() => {}}>
+      <NodeContextMenu
+        onCut={() => {}}
+        onCopy={() => {}}
+        onPaste={() => {}}
+        onAddNodes={onAddNodes}
+        screenToFlowPosition={screenToFlowPosition}
+        lastClickPosition={lastClickPosition}
+      >
         <ReactFlow
           className={styles.flow_wrapper}
           nodes={nodes}
@@ -316,6 +315,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
           onEdgesChange={onEdgesChange}
           onConnect={onConnectNodes}
           onNodesDelete={onNodesDelete}
+          onPaneClick={onPaneClick}
           // onDragOver={onDragOver}
           // onDrop={onDrop}
           defaultEdgeOptions={defaultEdgeOptions}
@@ -351,22 +351,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
             x={cursor?.x ?? 0}
             y={cursor?.y ?? 0}
           /> */}
-          {others.map(({ connectionId, presence }) => {
-            if (presence.cursor === null) {
-              return null;
-            }
-
-            return (
-              <Cursor
-                key={`cursor-${connectionId}`}
-                // connectionId is an integer that is incremented at every new connections
-                // Assigning a color with a modulo makes sure that a specific user has the same colors on every clients
-                color={COLORS[connectionId % COLORS.length]}
-                x={presence.cursor.x}
-                y={presence.cursor.y}
-              />
-            );
-          })}
+          <LiveCursors cursorPos={cursorPosition} />
         </ReactFlow>
       </NodeContextMenu>
     </motion.div>
@@ -375,3 +360,5 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
 
 export { Flow };
 export type { FlowProps, FlowState };
+
+export { edgeTypes, nodeTypes };
