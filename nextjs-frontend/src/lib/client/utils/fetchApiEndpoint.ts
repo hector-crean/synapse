@@ -1,4 +1,4 @@
-import { ENDPOINT_BASE_URL } from "../../../liveblocks.config";
+import { ENDPOINT_BASE_URL } from "../../../liveblocks-configs/flow-room.config";
 import { ErrorData, FetchApiResult } from "../../../types";
 
 /**
@@ -27,9 +27,8 @@ export async function fetchApiEndpoint<T = unknown>(
 
       const error = {
         code: 400,
-        message: `Error when calling ${url}: ${
-          body?.error ?? response.statusText
-        }`,
+        message: `Error when calling ${url}: ${body?.error ?? response.statusText
+          }`,
         suggestion: "Please try again",
       };
       console.warn(error);

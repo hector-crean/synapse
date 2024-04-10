@@ -1,22 +1,12 @@
 "use client";
 import { LiveFlowEdgeType, LiveFlowNodeType } from "@/components/flow/types";
-import { BaseUserMeta, EnsureJson, createClient } from "@liveblocks/client";
+import { BaseUserMeta, EnsureJson } from "@liveblocks/client";
 import { createRoomContext } from "@liveblocks/react";
 import { WithLiveblocks, liveblocks } from '@liveblocks/zustand';
 import { EdgeChange, NodeChange, applyEdgeChanges, applyNodeChanges } from "@xyflow/react";
 import { create } from "zustand";
-import { FlowState } from "./components/flow/Flow";
-
-
-
-export const ENDPOINT_BASE_URL = "/api/liveblocks" as const;
-
-
-
-const client = createClient({
-  authEndpoint: "/api/liveblocks/auth",
-
-});
+import { FlowState } from "../components/flow/Flow";
+import { client } from './client';
 
 
 // Optionally, UserMeta represents static/readonly metadata on each user, as
@@ -42,8 +32,6 @@ type Storage = {
   nodes: FlowState['nodes']
   edges: FlowState['edges']
 };
-
-
 
 
 
@@ -86,7 +74,7 @@ export const {
 
 
 
-const useLiveblocksStore = create<WithLiveblocks<FlowState, {}, EnsureJson<Storage>>>()(
+const useLiveblocksFlowStore = create<WithLiveblocks<FlowState, {}, EnsureJson<Storage>>>()(
   liveblocks(
     (set, get) => ({
       // Initial values for nodes and edges
@@ -120,6 +108,6 @@ const useLiveblocksStore = create<WithLiveblocks<FlowState, {}, EnsureJson<Stora
   )
 )
 
-export { useLiveblocksStore };
+export { useLiveblocksFlowStore };
 export type { Presence, UserMeta };
 

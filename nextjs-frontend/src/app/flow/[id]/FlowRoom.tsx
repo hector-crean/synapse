@@ -1,6 +1,5 @@
 import { COLORS } from "@/color";
 import { Avatar } from "@/components/avatar/Avatar";
-import { Cursor } from "@/components/cursor/Cursor";
 import { Flow } from "@/components/flow/Flow";
 import { RichTextModal } from "@/components/rich-text/Modal";
 import { Sidebar } from "@/components/sidebar/Sidebar";
@@ -8,31 +7,14 @@ import { MainLayout } from "@/layouts/MainLayout";
 import {
   Presence,
   UserMeta,
-  useLiveblocksStore,
+  useLiveblocksFlowStore,
   useMyPresence,
   useOthers,
-} from "@/liveblocks.config";
+} from "@/liveblocks-configs/flow-room.config";
 import { User } from "@liveblocks/client";
 import { ReactFlowProvider } from "@xyflow/react";
 import { PointerEventHandler, useEffect } from "react";
 import styles from "./Room.module.css";
-
-type CursorsProps = {
-  //   presence: Presence;
-  others: readonly User<Presence, UserMeta>[];
-};
-const Cursors = ({ others }: CursorsProps) => {
-  return others
-    .filter((other) => other.presence.cursor !== null)
-    .map(({ connectionId, presence }) => (
-      <Cursor
-        key={connectionId}
-        user={presence.user}
-        position={presence.cursor ?? { x: 0, y: 0 }}
-        color="red"
-      />
-    ));
-};
 
 type AvatarsProps = {
   presence: Presence;
@@ -79,7 +61,7 @@ const FlowRoom = ({ id }: FlowRoomProps) => {
     setEdges,
     onEdgesChange,
     onNodesChange,
-  } = useLiveblocksStore();
+  } = useLiveblocksFlowStore();
 
   // Enter the Liveblocks room on load
   useEffect(() => {

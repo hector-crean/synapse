@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 
 import * as z from "zod";
-import { FlowRoom } from "./FlowRoom";
+import { TextRoom } from "./TextRoom";
 
 const NextAuthSchema = z.object({
   image: z.string().nullable(),
@@ -44,7 +44,7 @@ const Page = () => {
         initialStorage={{ nodes: [], edges: [] }}
       >
         <ClientSideSuspense fallback={<Loading />}>
-          {() => <FlowRoom id={id} />}
+          {() => <TextRoom id={id} />}
         </ClientSideSuspense>
       </RoomProvider>
     );

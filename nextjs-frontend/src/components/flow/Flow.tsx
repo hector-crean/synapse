@@ -50,7 +50,7 @@ import { ShapeNode } from "./nodes/ShapeNode";
 
 import "@xyflow/react/dist/style.css";
 
-import { useMyPresence, useOthers } from "@/liveblocks.config";
+import { useMyPresence, useOthers } from "@/liveblocks.flow.config";
 import { LiveCursors } from "./cursors/Cursor";
 import { RichTextNode } from "./nodes/RichTextNode";
 import { LiveFlowEdgeType, LiveFlowNodeType } from "./types";
@@ -343,14 +343,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
               onDeleteNodes={() => onDeleteNodes(selectedNodes)}
             />
           </NodeToolbar>
-          {/* <Cursor
-            key={`my-cursor`}
-            // connectionId is an integer that is incremented at every new connections
-            // Assigning a color with a modulo makes sure that a specific user has the same colors on every clients
-            color={"red"}
-            x={cursor?.x ?? 0}
-            y={cursor?.y ?? 0}
-          /> */}
+
           <LiveCursors cursorPos={cursorPosition} />
         </ReactFlow>
       </NodeContextMenu>

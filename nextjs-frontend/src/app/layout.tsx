@@ -4,12 +4,10 @@ import { ReactQueryClientProvider } from "@/components/QueryClientProvider";
 import { Case, Default, Switch } from "@/components/Switch";
 import { AuthenticatedLayout } from "@/layouts/Authenticated/AuthenticatedLayout";
 import { AuthenticationLayout } from "@/layouts/Authentication/Authentication";
-import { MantineProvider } from "@mantine/core";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import { Inter } from "next/font/google";
-import "./globals.css";
-import { theme } from "./theme";
+import "./styles/globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -41,23 +39,21 @@ export default async function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <MantineProvider theme={theme}>
-          <SessionProvider session={session}>
-            <ReactQueryClientProvider>
-              <Switch>
-                <Case condition={Boolean(session)}>
-                  <AuthenticatedLayout session={session}>
-                    {children}
-                  </AuthenticatedLayout>
-                </Case>
-                <Default>
-                  <AuthenticationLayout />
-                </Default>
-              </Switch>
-              {/* <ReactQueryDevtools initialIsOpen /> */}
-            </ReactQueryClientProvider>
-          </SessionProvider>
-        </MantineProvider>
+        <SessionProvider session={session}>
+          <ReactQueryClientProvider>
+            <Switch>
+              <Case condition={Boolean(session)}>
+                <AuthenticatedLayout session={session}>
+                  {children}
+                </AuthenticatedLayout>
+              </Case>
+              <Default>
+                <AuthenticationLayout />
+              </Default>
+            </Switch>
+            {/* <ReactQueryDevtools initialIsOpen /> */}
+          </ReactQueryClientProvider>
+        </SessionProvider>
       </body>
     </html>
   );

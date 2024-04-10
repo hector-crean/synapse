@@ -1,6 +1,6 @@
 import { COLORS } from "@/color";
 import { Cursor } from "@/components/cursor/Cursor";
-import { useMyPresence, useOthers } from "@/liveblocks.config";
+import { useMyPresence, useOthers } from "@/liveblocks.flow.config";
 import { XYPosition, useReactFlow } from "@xyflow/react";
 import { FC, useEffect } from "react";
 
