@@ -4,7 +4,10 @@ import { CloseIcon } from "@/components/icons/CloseIcon";
 import { DocumentCompleteIcon } from "@/components/icons/DocumentCompleteIcon";
 import { DocumentMagnifyingIcon } from "@/components/icons/DocumentMagnifyingIcon";
 import { PlusIcon } from "@/components/icons/PlusIcon";
-import { ThreadMetadata, useThreads } from "@/liveblocks.flow.config";
+import {
+    ThreadMetadata,
+    useThreads,
+} from "@/liveblocks-configs/flow-room.config";
 import { ThreadData } from "@liveblocks/client";
 import { Thread } from "@liveblocks/react-comments";
 import { useMemo } from "react";

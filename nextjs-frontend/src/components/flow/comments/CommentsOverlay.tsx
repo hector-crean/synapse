@@ -1,6 +1,6 @@
 "use client";
 
-import { PinnedThread } from "@/components/comments/PinnedThread";
+import { PinnedThread } from "@/components/flow/comments/PinnedThread";
 import {
   getCoordsFromAccurateCursorPositions,
   getCoordsFromElement,
@@ -12,7 +12,7 @@ import {
   useEditThreadMetadata,
   useThreads,
   useUser,
-} from "@/liveblocks.flow.config";
+} from "@/liveblocks-configs/flow-room.config";
 import { ThreadData } from "@liveblocks/client";
 import { useCallback, useEffect, useRef, useState } from "react";
 import styles from "./CommentsOverlay.module.css";

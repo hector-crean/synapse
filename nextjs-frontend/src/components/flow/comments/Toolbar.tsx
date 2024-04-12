@@ -1,15 +1,15 @@
 "use client";
 
-import { Button } from "./Button";
-import { useState } from "react";
-import * as Collapsible from "@radix-ui/react-collapsible";
-import { NewThread } from "@/components/comments/NewThread";
-import { Sidebar } from "@/components/comments/Sidebar";
-import { ToolbarAvatars } from "@/components/comments/ToolbarAvatars";
-import { SidebarIcon } from "@/components/icons/SidebarIcon";
-import styles from "./Toolbar.module.css";
-import sidebarStyles from "./Sidebar.module.css";
+import { NewThread } from "@/components/flow/comments/NewThread";
+import { Sidebar } from "@/components/flow/comments/Sidebar";
+import { ToolbarAvatars } from "@/components/flow/comments/ToolbarAvatars";
 import { PlusIcon } from "@/components/icons/PlusIcon";
+import { SidebarIcon } from "@/components/icons/SidebarIcon";
+import * as Collapsible from "@radix-ui/react-collapsible";
+import { useState } from "react";
+import { Button } from "./Button";
+import sidebarStyles from "./Sidebar.module.css";
+import styles from "./Toolbar.module.css";
 
 export function Toolbar({ ...props }) {
   const [open, setOpen] = useState(false);

@@ -1,6 +1,6 @@
 
 import * as z from 'zod';
-
+import { UserSchema } from '../../../prisma/generated/zod';
 
 // Permission must be either [], ['room:write'] or ['room:read', 'room:presence:write']
 
@@ -47,8 +47,9 @@ const RoomUserSchema = <Info extends z.ZodType<any, any>>(infoSchema: Info) =>
 type RoomUserType<InfoType extends z.ZodType<any, any>> = z.TypeOf<ReturnType<typeof RoomUserSchema<InfoType>>>;
 
 
+type UserType = z.infer<typeof UserSchema>
 
 
-export { PermissionEnumSchema, RoomAccessesSchema, RoomInfoSchema, RoomPermissionSchema, RoomTypeSchema, RoomUserSchema };
-export type { PermissionEnumType, RoomAccessesType, RoomInfoType, RoomMetadataType, RoomPermissionType, RoomType, RoomUserType };
+export { PermissionEnumSchema, RoomAccessesSchema, RoomInfoSchema, RoomPermissionSchema, RoomTypeSchema, RoomUserSchema, UserSchema };
+export type { PermissionEnumType, RoomAccessesType, RoomInfoType, RoomMetadataType, RoomPermissionType, RoomType, RoomUserType, UserType };
 

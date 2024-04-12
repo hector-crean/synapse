@@ -9,6 +9,19 @@ import { FlowState } from "../components/flow/Flow";
 import { client } from './client';
 
 
+export type AccurateCursorPositions = {
+  cursorSelectors: string[];
+  x: number;
+  y: number;
+};
+
+export type DragOffset = {
+  x: number;
+  y: number;
+};
+
+
+
 // Optionally, UserMeta represents static/readonly metadata on each user, as
 // provided by your own custom auth back end (if used). Useful for data that
 // will not change during a session, like a user's name or avatar.
@@ -19,7 +32,8 @@ type UserMeta = BaseUserMeta
 // and that will automatically be kept in sync. Accessible through the
 // `user.presence` property. Must be JSON-serializable.
 type Presence = {
-  cursor: { x: number, y: number } | null,
+  cursor: AccurateCursorPositions | null;
+  editingText: `${string}/${string}` | null;
   user: UserMeta
   // ...
 };
@@ -41,6 +55,18 @@ type RoomEvent = {
   // type: "NOTIFICATION",
   // ...
 };
+
+// Metadata attached to comments
+export type ThreadMetadata = {
+  resolved: boolean;
+  zIndex: number;
+
+  // AccurateCursorPositions["cursorSelectors"].toString()
+  cursorSelectors: string;
+  cursorX: AccurateCursorPositions["x"];
+  cursorY: AccurateCursorPositions["y"];
+};
+
 
 export const {
   suspense: {
@@ -69,8 +95,12 @@ export const {
     useMutation,
     useStatus,
     useLostConnectionListener,
+    useUser,
+    useCreateThread,
+    useThreads,
+    useEditThreadMetadata
   },
-} = createRoomContext<Presence, Storage, UserMeta, RoomEvent>(client);
+} = createRoomContext<Presence, Storage, UserMeta, RoomEvent, ThreadMetadata>(client);
 
 
 

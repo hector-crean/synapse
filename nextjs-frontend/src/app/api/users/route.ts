@@ -1,4 +1,4 @@
-import { getUser } from "@/database";
+import { getUsers } from "@/lib/server/users/get";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
@@ -9,8 +9,10 @@ export async function GET(request: NextRequest) {
     return new NextResponse("Missing or invalid userIds", { status: 400 });
   }
 
+  const users = await getUsers({ userIds: userIds })
+
   return NextResponse.json(
-    userIds.map((userId) => getUser(userId)?.info || null),
+    users,
     { status: 200 }
   );
 }

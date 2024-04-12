@@ -1,4 +1,4 @@
-import { AccurateCursorPositions, DragOffset } from "@/liveblocks.flow.config";
+import { AccurateCursorPositions, DragOffset } from "@/liveblocks-configs/flow-room.config";
 
 export function getCoordsFromPointerEvent<El>(
   e: PointerEvent,
@@ -29,8 +29,8 @@ export function getCoordsFromPointerEvent<El>(
 
   return {
     cursorSelectors,
-    cursorX: xPercent,
-    cursorY: yPercent,
+    x: xPercent,
+    y: yPercent,
   };
 }
 
@@ -62,8 +62,8 @@ export function getCoordsFromElement<El>(
 
   return {
     cursorSelectors,
-    cursorX: xPercent,
-    cursorY: yPercent,
+    x: xPercent,
+    y: yPercent,
   };
 }
 
@@ -148,8 +148,8 @@ function generateSelectors(pathArray: Element[]): string[] | null {
 
 export function getCoordsFromAccurateCursorPositions({
   cursorSelectors,
-  cursorX,
-  cursorY,
+  x,
+  y,
 }: AccurateCursorPositions) {
   if (typeof window === "undefined") {
     return null;
@@ -164,8 +164,8 @@ export function getCoordsFromAccurateCursorPositions({
         if (el && el.getClientRects().length) {
           const { top, left, width, height } = el.getBoundingClientRect();
           return {
-            x: left + width * cursorX + window.scrollX,
-            y: top + height * cursorY + window.scrollY,
+            x: left + width * x + window.scrollX,
+            y: top + height * y + window.scrollY,
           };
         }
       } catch (err) {

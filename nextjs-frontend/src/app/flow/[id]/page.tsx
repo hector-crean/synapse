@@ -36,6 +36,7 @@ const Page = () => {
         id={id}
         initialPresence={{
           cursor: null,
+          
           user: {
             name: result.data.name ?? "Placeholder",
             avatar: result.data.image ?? "",

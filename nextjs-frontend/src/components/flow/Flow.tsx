@@ -31,11 +31,10 @@ import {
 import { motion } from "framer-motion";
 import {
   MouseEventHandler,
-  PointerEventHandler,
   useCallback,
   useEffect,
   useMemo,
-  useState,
+  useState
 } from "react";
 import { NodeContextMenu } from "./context-menu/ContextMenu";
 import { Controls } from "./control-bar/ControlBar";
@@ -50,7 +49,12 @@ import { ShapeNode } from "./nodes/ShapeNode";
 
 import "@xyflow/react/dist/style.css";
 
-import { useMyPresence, useOthers } from "@/liveblocks.flow.config";
+import {
+  useMyPresence,
+  useOthers,
+} from "@/liveblocks-configs/flow-room.config";
+import { throttle } from "lodash";
+import { Comments } from "./comments/Comments";
 import { LiveCursors } from "./cursors/Cursor";
 import { RichTextNode } from "./nodes/RichTextNode";
 import { LiveFlowEdgeType, LiveFlowNodeType } from "./types";
@@ -246,23 +250,70 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
     setLastClickPosition(position);
   };
 
-  const [cursorPosition, setCursorPosition] = useState<XYPosition | null>(null);
 
-  const onPointerLeave: PointerEventHandler = useCallback(() => {
-    // When the pointer goes out, set cursor to null
-    setCursorPosition(null);
-  }, [setCursorPosition]);
 
-  const onPointerMove: PointerEventHandler = useCallback(
-    (event) => {
-      // Update the user cursor position on every pointer move
-      setCursorPosition({
-        x: event.clientX,
-        y: event.clientY,
+  const onPointerLeave: MouseEventHandler = useCallback(() => {
+  
+    // updateMyPresence({ cursor: null});
+  }, [updateMyPresence]);
+
+
+
+
+
+
+  const onPointerMove: MouseEventHandler = useCallback(
+    throttle((event) => {
+
+      const {x,y} = screenToFlowPosition({x: event.clientX, y: event.clientY});
+      updateMyPresence({
+        cursor: { x,y, cursorSelectors: [] },
       });
-    },
-    [setCursorPosition, screenToFlowPosition]
+
+
+    }, 1000),
+    [screenToFlowPosition, updateMyPresence]
   );
+
+
+  
+  // useEffect(() => {
+  //   // On cursor move, update presence
+  //   function handlePointerMove(e: PointerEvent) {
+  //     const elementUnder = document.elementFromPoint(e.clientX, e.clientY);
+
+  //     if (elementUnder) {
+  //       const cursor = getCoordsFromElement(elementUnder, e.clientX, e.clientY);
+  //       setCursorPosition(cursor);
+  //     } else {
+  //       // setCursorPosition(null);
+  //     }
+  //   }
+
+  //   // Hide cursor on leave page
+  //   function handlePointerLeave() {
+  //     // setCursorPosition(null);
+  //   }
+
+  //   document.documentElement.addEventListener("pointermove", handlePointerMove);
+  //   document.documentElement.addEventListener(
+  //     "pointerleave",
+  //     handlePointerLeave
+  //   );
+
+  //   return () => {
+  //     document.documentElement.removeEventListener(
+  //       "pointermove",
+  //       handlePointerMove
+  //     );
+  //     document.documentElement.removeEventListener(
+  //       "pointerleave",
+  //       handlePointerLeave
+  //     );
+  //   };
+  // }, [setCursorPosition]);
+
+
 
   return (
     <motion.div
@@ -309,8 +360,8 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
           fitViewOptions={{ padding: 0.1 /*nodes: [{ id: '1' }]*/ }}
           attributionPosition="top-right"
           maxZoom={Infinity}
-          onPointerMove={onPointerMove}
-          onPointerLeave={onPointerLeave}
+          onPaneMouseMove={onPointerMove}
+          onPaneMouseLeave={onPointerLeave}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnectNodes}
@@ -344,7 +395,9 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
             />
           </NodeToolbar>
 
-          <LiveCursors cursorPos={cursorPosition} />
+          <LiveCursors  />
+          {/* <Cursors/> */}
+          <Comments/>
         </ReactFlow>
       </NodeContextMenu>
     </motion.div>
@@ -354,4 +407,5 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
 export { Flow };
 export type { FlowProps, FlowState };
 
-export { edgeTypes, nodeTypes };
+  export { edgeTypes, nodeTypes };
+

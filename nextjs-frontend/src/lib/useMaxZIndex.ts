@@ -1,4 +1,4 @@
-import { useThreads } from "@/liveblocks.flow.config";
+import { useThreads } from "@/liveblocks-configs/flow-room.config";
 import { useMemo } from "react";
 
 export function useMaxZIndex() {

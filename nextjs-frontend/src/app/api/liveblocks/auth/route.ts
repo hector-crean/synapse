@@ -44,6 +44,13 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   // Start an auth session inside your endpoint
   const session = liveblocks.prepareSession(
     user.email,
+    {
+      userInfo: {
+        name: user.name ?? 'unknown',
+        avatar: user.image ?? ''
+        
+      }
+    }
   );
 
 

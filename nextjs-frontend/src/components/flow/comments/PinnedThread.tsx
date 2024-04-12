@@ -1,15 +1,18 @@
 "use client";
 
-import { ThreadMetadata, UserMeta } from "@/liveblocks.flow.config";
+import {
+    ThreadMetadata,
+    UserMeta,
+} from "@/liveblocks-configs/flow-room.config";
 import { ThreadData } from "@liveblocks/client";
 import { Thread } from "@liveblocks/react-comments";
 import {
-  PointerEvent,
-  PointerEventHandler,
-  useCallback,
-  useMemo,
-  useRef,
-  useState,
+    PointerEvent,
+    PointerEventHandler,
+    useCallback,
+    useMemo,
+    useRef,
+    useState,
 } from "react";
 import styles from "./Pinned.module.css";
 

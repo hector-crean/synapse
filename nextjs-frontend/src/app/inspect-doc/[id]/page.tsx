@@ -1,13 +1,13 @@
 "use client";
 
 import { Loading } from "@/components/Loading";
-import { RoomProvider } from "@/liveblocks-configs/text-room.config";
+import { RoomProvider } from "@/liveblocks-configs/flow-room.config";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
 
 import * as z from "zod";
-import { TextRoom } from "./TextRoom";
+import { TextRoom } from "./InspectDocRoom";
 
 const NextAuthSchema = z.object({
   image: z.string().nullable(),
@@ -15,6 +15,7 @@ const NextAuthSchema = z.object({
   email: z.string(),
 });
 
+type NextAuthType = z.infer<typeof NextAuthSchema>;
 
 const RoomQuerySchema = z.object({
   id: z.string(),
@@ -34,11 +35,9 @@ const Page = () => {
       <RoomProvider
         id={id}
         initialPresence={{
-          cursor: null, 
-          
+          cursor: null,
+          editingText: null,
         }}
-        
-       
       >
         <ClientSideSuspense fallback={<Loading />}>
           {() => <TextRoom id={id} />}

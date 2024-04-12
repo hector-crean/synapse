@@ -33,7 +33,6 @@ const NodeContextMenu = ({
 }: NodeContextMenuProps) => {
   const [pos, setPos] = useState<XYPosition>({ x: 0, y: 0 });
 
-  console.log(pos);
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger
@@ -109,3 +108,4 @@ const NodeContextMenu = ({
 
 export { NodeContextMenu };
 export type { NodeContextMenuProps };
+

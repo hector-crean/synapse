@@ -1,6 +1,6 @@
 "use client";
 
-import { useOthers, useSelf } from "@/liveblocks.flow.config";
+import { useOthers, useSelf } from "@/liveblocks-configs/flow-room.config";
 import styles from "./ToolbarAvatars.module.css";
 
 export function ToolbarAvatars() {

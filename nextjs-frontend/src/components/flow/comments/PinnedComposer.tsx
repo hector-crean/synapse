@@ -1,6 +1,6 @@
 "use client";
 
-import { UserMeta } from "@/liveblocks.flow.config";
+import { UserMeta } from "@/liveblocks-configs/flow-room.config";
 import { Composer, ComposerProps } from "@liveblocks/react-comments";
 import { PointerEventHandler } from "react";
 import styles from "./Pinned.module.css";

@@ -1,10 +1,14 @@
 "use client";
 
-import { NewThreadCursor } from "@/components/comments/NewThreadCursor";
-import { PinnedComposer } from "@/components/comments/PinnedComposer";
+import { NewThreadCursor } from "@/components/flow/comments/NewThreadCursor";
+import { PinnedComposer } from "@/components/flow/comments/PinnedComposer";
 import { getCoordsFromPointerEvent } from "@/lib/coords";
 import { useMaxZIndex } from "@/lib/useMaxZIndex";
-import { useCreateThread, useSelf, useUser } from "@/liveblocks.flow.config";
+import {
+  useCreateThread,
+  useSelf,
+  useUser,
+} from "@/liveblocks-configs/flow-room.config";
 import { ComposerSubmitComment } from "@liveblocks/react-comments/primitives";
 import * as Portal from "@radix-ui/react-portal";
 import { Slot } from "@radix-ui/react-slot";

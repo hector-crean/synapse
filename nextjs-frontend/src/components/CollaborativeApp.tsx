@@ -1,6 +1,6 @@
 "use client";
 
-import { useOthers } from "@/liveblocks.flow.config";
+import { useOthers } from "@/liveblocks-configs/flow-room.config";
 
 export function CollaborativeApp() {
   const others = useOthers();

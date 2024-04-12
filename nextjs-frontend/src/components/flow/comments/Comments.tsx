@@ -1,8 +1,8 @@
 "use client";
 
+import { CommentsOverlay } from "@/components/flow/comments/CommentsOverlay";
+import { Toolbar } from "@/components/flow/comments/Toolbar";
 import { ClientSideSuspense } from "@liveblocks/react";
-import { CommentsOverlay } from "@/components/comments/CommentsOverlay";
-import { Toolbar } from "@/components/comments/Toolbar";
 import { ErrorBoundary } from "react-error-boundary";
 import styles from "./Toolbar.module.css";
 

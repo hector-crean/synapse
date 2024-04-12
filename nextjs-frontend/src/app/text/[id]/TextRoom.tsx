@@ -1,26 +1,18 @@
-import { Comments } from "@/components/comments/Comments";
-import { Cursors } from "@/components/cursors/Cursors";
+import { CollaborativeEditor } from "@/components/richt-text-editor/CollaborativeEditor";
+
 
 interface TextRoomProps {
   id: string;
 }
 const TextRoom = ({ id }: TextRoomProps) => {
-  // if (isStorageLoading) {
-  //   return (
-  //     <div className={styles.container}>
-  //       <div className={styles.loading}>
-  //         <img src="https://liveblocks.io/loading.svg" alt="Loading" />
-  //       </div>
-  //     </div>
-  //   );
-  // }
+
+
 
   return (
-    <>
-      <Cursors />
-      <Comments />
-    </>
+    <CollaborativeEditor />
+
   );
 };
 
 export { TextRoom };
+
