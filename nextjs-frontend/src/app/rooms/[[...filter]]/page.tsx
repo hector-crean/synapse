@@ -40,7 +40,6 @@ const Page = ({ params }: QueryParams) => {
     return "An error has occurred: " + roomInfoQuery.error.message;
 
   if (roomInfoQuery.data) {
-    console.log(roomInfoQuery.data);
     return (
       <Dashboard
         rooms={roomInfoQuery.data}

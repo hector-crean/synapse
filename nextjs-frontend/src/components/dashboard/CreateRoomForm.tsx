@@ -112,7 +112,7 @@ const CreateRoomForm = ({ createRoomQuery }: CreateRoomFormProps) => {
                   <FormControl>
                     <Input placeholder={defaultParams["id"]} {...field} />
                   </FormControl>
-                  <FormDescription>This is the Room's id.</FormDescription>
+                  <FormDescription>This is the Room id.</FormDescription>
                   <FormMessage />
                 </FormItem>
               )}

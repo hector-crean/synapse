@@ -141,8 +141,9 @@ const Dashboard = ({ rooms, filters, createRoom }: DashboardProps) => {
                         </TableRow>
                       </TableHeader>
                       <TableBody>
-                        {rooms.data.map((room) => (
+                        {rooms.data.map((room, idx) => (
                           <TableRow
+                            key={`${idx}`}
                             onClick={() =>
                               router.push(`/${room.metadata.type}/${room.id}`)
                             }

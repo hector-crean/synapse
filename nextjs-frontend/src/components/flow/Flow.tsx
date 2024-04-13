@@ -25,8 +25,7 @@ import {
   ReactFlow,
   SelectionMode,
   useReactFlow,
-  useStore as useReactFlowStore,
-  XYPosition,
+  XYPosition
 } from "@xyflow/react";
 import { motion } from "framer-motion";
 import {
@@ -41,7 +40,6 @@ import { Controls } from "./control-bar/ControlBar";
 import { PolymorphicEdge } from "./edges/PolymorphicEdge";
 import { ConnectionStatus } from "./edges/validation/ConnectionStatus";
 import "./Flow.css";
-import styles from "./Flow.module.css";
 import useAutoLayout, { LayoutOptions } from "./hooks/useAutoLayout";
 import { NodeToolbarBase } from "./node-toolbar/NodeToolbarBase";
 import { PolymorphicNode } from "./nodes/PolymorphicNode";
@@ -55,7 +53,7 @@ import {
 } from "@/liveblocks-configs/flow-room.config";
 import { throttle } from "lodash";
 import { Comments } from "./comments/Comments";
-import { LiveCursors } from "./cursors/Cursor";
+import { LiveCursors } from "./cursors/Cursors";
 import { RichTextNode } from "./nodes/RichTextNode";
 import { LiveFlowEdgeType, LiveFlowNodeType } from "./types";
 
@@ -107,7 +105,6 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
   onEdgesChange,
   onNodesChange,
 }: FlowProps<NodeType, EdgeType>) {
-  const rfDomNode = useReactFlowStore((state) => state.domNode);
 
   const {
     fitView,
@@ -252,8 +249,10 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
 
 
 
-  const onPointerLeave: MouseEventHandler = useCallback(() => {
-  
+  const onCursorLeave: MouseEventHandler = useCallback(() => {
+    updateMyPresence({
+      cursor: null,
+    });
     // updateMyPresence({ cursor: null});
   }, [updateMyPresence]);
 
@@ -262,21 +261,21 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
 
 
 
-  const onPointerMove: MouseEventHandler = useCallback(
+  const onCursorMove: MouseEventHandler = useCallback(
     throttle((event) => {
 
-      const {x,y} = screenToFlowPosition({x: event.clientX, y: event.clientY});
+      const { x, y } = screenToFlowPosition({ x: Math.round(event.clientX), y: Math.round(event.clientY) }, { snapToGrid: false })
       updateMyPresence({
-        cursor: { x,y, cursorSelectors: [] },
+        cursor: { x, y, cursorSelectors: [] },
       });
 
 
-    }, 1000),
+    }, 300),
     [screenToFlowPosition, updateMyPresence]
   );
 
 
-  
+
   // useEffect(() => {
   //   // On cursor move, update presence
   //   function handlePointerMove(e: PointerEvent) {
@@ -328,15 +327,15 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
       style={{ width: "100%", height: "100%" }}
     >
       <NodeContextMenu
-        onCut={() => {}}
-        onCopy={() => {}}
-        onPaste={() => {}}
+        onCut={() => { }}
+        onCopy={() => { }}
+        onPaste={() => { }}
         onAddNodes={onAddNodes}
         screenToFlowPosition={screenToFlowPosition}
         lastClickPosition={lastClickPosition}
       >
         <ReactFlow
-          className={styles.flow_wrapper}
+          // className={styles.flow_wrapper}
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
@@ -360,8 +359,9 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
           fitViewOptions={{ padding: 0.1 /*nodes: [{ id: '1' }]*/ }}
           attributionPosition="top-right"
           maxZoom={Infinity}
-          onPaneMouseMove={onPointerMove}
-          onPaneMouseLeave={onPointerLeave}
+
+          onPaneMouseMove={onCursorMove}
+          onPaneMouseLeave={onCursorLeave}
           onNodesChange={onNodesChange}
           onEdgesChange={onEdgesChange}
           onConnect={onConnectNodes}
@@ -394,12 +394,13 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
               onDeleteNodes={() => onDeleteNodes(selectedNodes)}
             />
           </NodeToolbar>
+          <LiveCursors />
 
-          <LiveCursors  />
           {/* <Cursors/> */}
-          <Comments/>
+          <Comments />
         </ReactFlow>
       </NodeContextMenu>
+
     </motion.div>
   );
 }
@@ -407,5 +408,5 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
 export { Flow };
 export type { FlowProps, FlowState };
 
-  export { edgeTypes, nodeTypes };
+export { edgeTypes, nodeTypes };
 

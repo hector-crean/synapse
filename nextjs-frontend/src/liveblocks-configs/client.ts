@@ -5,6 +5,8 @@ export const ENDPOINT_BASE_URL = "/api/liveblocks" as const;
 
 
 
+
+
 const client = createClient({
     authEndpoint: "/api/liveblocks/auth",
     async resolveUsers({ userIds }) {
@@ -24,18 +26,34 @@ const client = createClient({
 
         return users;
     },
-    // async resolveMentionSuggestions({ text }) {
-    //     const response = await fetch(
-    //         `/api/users/search?text=${encodeURIComponent(text)}`
-    //     );
+  // Get rooms' info from their ID
+  resolveRoomsInfo: async ({ roomIds }) => {
+    const searchParams = new URLSearchParams(
+      roomIds.map((roomId) => ["roomIds", roomId])
+    );
+    const response = await fetch(`/api/rooms?${searchParams}`);
 
-    //     if (!response.ok) {
-    //         throw new Error("Problem resolving user");
-    //     }
+    if (!response.ok) {
+      throw new Error("Problem resolving rooms info");
+    }
 
-    //     const userIds = await response.json();
-    //     return userIds;
-    // },
+    const roomsInfo = await response.json();
+    return roomsInfo;
+  },
+
+  // Find a list of users that match the current search term
+  resolveMentionSuggestions: async ({ text }) => {
+    const response = await fetch(
+      setExampleId(`/api/users/search?text=${encodeURIComponent(text)}`)
+    );
+
+    if (!response.ok) {
+      throw new Error("Problem resolving mention suggestions");
+    }
+
+    const userIds = await response.json();
+    return userIds;
+  },
 });
 
 

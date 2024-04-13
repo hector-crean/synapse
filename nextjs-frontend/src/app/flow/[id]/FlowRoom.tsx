@@ -13,7 +13,7 @@ import {
 } from "@/liveblocks-configs/flow-room.config";
 import { User } from "@liveblocks/client";
 import { ReactFlowProvider } from "@xyflow/react";
-import { PointerEventHandler, useEffect } from "react";
+import { useEffect } from "react";
 import styles from "./Room.module.css";
 
 type AvatarsProps = {
@@ -72,17 +72,10 @@ const FlowRoom = ({ id }: FlowRoomProps) => {
   const others = useOthers();
   const userCount = others.length;
 
-  const [presence, updatePresence] = useMyPresence();
+  const [presence] = useMyPresence();
 
   // Update cursor coordinates on pointer move
-  const handlePointerMove: PointerEventHandler = (e) => {
-    const cursor = { x: Math.floor(e.clientX), y: Math.floor(e.clientY) };
-    updatePresence({ cursor });
-  };
-  // Set cursor to null on pointer leave
-  const handlePointerLeave: PointerEventHandler = (e) => {
-    updatePresence({ cursor: null });
-  };
+
 
   if (isStorageLoading) {
     return (
@@ -113,8 +106,7 @@ const FlowRoom = ({ id }: FlowRoomProps) => {
             onNodesChange={onNodesChange}
           />
         }
-        onPointerMove={handlePointerMove}
-        onPointerLeave={handlePointerLeave}
+
       />
       <RichTextModal />
     </ReactFlowProvider>
