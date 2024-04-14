@@ -30,9 +30,11 @@ import {
 import { motion } from "framer-motion";
 import {
   MouseEventHandler,
+  PointerEvent,
   useCallback,
   useEffect,
   useMemo,
+  useRef,
   useState
 } from "react";
 import { NodeContextMenu } from "./context-menu/ContextMenu";
@@ -47,7 +49,9 @@ import { ShapeNode } from "./nodes/ShapeNode";
 
 import "@xyflow/react/dist/style.css";
 
+import { useMaxZIndex } from "@/lib/useMaxZIndex";
 import {
+  useCreateThread,
   useMyPresence,
   useOthers,
 } from "@/liveblocks-configs/flow-room.config";
@@ -275,42 +279,24 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
   );
 
 
+  // thread creation:
+  const createThread = useCreateThread();
+  const maxZIndex = useMaxZIndex();
+  const composerRef = useRef<HTMLDivElement>(null);
+  const [composerCoords, setComposerCoords] = useState<XYPosition | null>(null);
 
-  // useEffect(() => {
-  //   // On cursor move, update presence
-  //   function handlePointerMove(e: PointerEvent) {
-  //     const elementUnder = document.elementFromPoint(e.clientX, e.clientY);
+  const dragging = useRef(false);
+  const dragOffset = useRef({ x: 0, y: 0 });
+  const dragStart = useRef({ x: 0, y: 0 });
 
-  //     if (elementUnder) {
-  //       const cursor = getCoordsFromElement(elementUnder, e.clientX, e.clientY);
-  //       setCursorPosition(cursor);
-  //     } else {
-  //       // setCursorPosition(null);
-  //     }
-  //   }
+  const lastPointerEvent = useRef<PointerEvent>();
+  const [allowUseComposer, setAllowUseComposer] = useState(false);
+  const allowComposerRef = useRef(allowUseComposer);
+  allowComposerRef.current = allowUseComposer;
 
-  //   // Hide cursor on leave page
-  //   function handlePointerLeave() {
-  //     // setCursorPosition(null);
-  //   }
+  const onDrag = () => {
 
-  //   document.documentElement.addEventListener("pointermove", handlePointerMove);
-  //   document.documentElement.addEventListener(
-  //     "pointerleave",
-  //     handlePointerLeave
-  //   );
-
-  //   return () => {
-  //     document.documentElement.removeEventListener(
-  //       "pointermove",
-  //       handlePointerMove
-  //     );
-  //     document.documentElement.removeEventListener(
-  //       "pointerleave",
-  //       handlePointerLeave
-  //     );
-  //   };
-  // }, [setCursorPosition]);
+  }
 
 
 
@@ -359,6 +345,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
           fitViewOptions={{ padding: 0.1 /*nodes: [{ id: '1' }]*/ }}
           attributionPosition="top-right"
           maxZoom={Infinity}
+          onDragStart={() => console.log('drag start')}
 
           onPaneMouseMove={onCursorMove}
           onPaneMouseLeave={onCursorLeave}
@@ -395,8 +382,6 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
             />
           </NodeToolbar>
           <LiveCursors />
-
-          {/* <Cursors/> */}
           <Comments />
         </ReactFlow>
       </NodeContextMenu>
@@ -408,5 +393,5 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
 export { Flow };
 export type { FlowProps, FlowState };
 
-export { edgeTypes, nodeTypes };
+  export { edgeTypes, nodeTypes };
 

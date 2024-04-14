@@ -147,6 +147,7 @@ const Dashboard = ({ rooms, filters, createRoom }: DashboardProps) => {
                             onClick={() =>
                               router.push(`/${room.metadata.type}/${room.id}`)
                             }
+                            className="hover:bg-slate-400"
                           >
                             <TableCell className="hidden sm:table-cell">
                               <Image

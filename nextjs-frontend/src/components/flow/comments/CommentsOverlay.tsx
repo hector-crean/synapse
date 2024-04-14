@@ -77,8 +77,8 @@ function OverlayThread({
 
       const fromAccurateCoords = getCoordsFromAccurateCursorPositions({
         cursorSelectors: cursorSelectors.split(","),
-        cursorX,
-        cursorY,
+        x: cursorX,
+        y: cursorY,
       });
 
       if (!fromAccurateCoords) {
@@ -183,12 +183,12 @@ function OverlayThread({
           return;
         }
 
-        const { cursorSelectors, cursorX, cursorY } = accurateCoords;
+        const { cursorSelectors, x, y } = accurateCoords;
 
-        const metadata = {
+        const metadata: Partial<ThreadMetadata> = {
           cursorSelectors: cursorSelectors.join(","),
-          cursorX,
-          cursorY,
+          cursorX: x,
+          cursorY: y,
           zIndex: maxZIndex + 1,
         };
 

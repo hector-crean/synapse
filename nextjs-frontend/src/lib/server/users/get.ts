@@ -17,6 +17,7 @@ const getUser = async ({ userId }: GetUserParams): Promise<UserType | null> => {
 }
 const GetUsersParamsSchema = z.object({ userIds: z.array(z.string()) })
 
+
 type GetUsersParams = z.infer<typeof GetUsersParamsSchema>;
 
 
@@ -32,10 +33,30 @@ const getUsers = async ({ userIds }: GetUsersParams): Promise<Array<UserType>> =
 }
 
 
+const GetUsersFuzzyParamsSchema = z.object({ text: z.string() })
+type GetUsersFuzzyParams = z.infer<typeof GetUsersFuzzyParamsSchema>;
+
+const getUsersFuzzy = async ({text}:GetUsersFuzzyParams ): Promise<Array<UserType>> => {
+
+    const users = await prisma.user.findMany({
+        where: {
+          OR: [
+            { name: { contains: text, mode: 'insensitive' } },
+            { email: { contains: text, mode: 'insensitive' } },
+          ],
+        },
+        
+      });
+
+      return users
+
+
+}
 
 
 
 
-export { GetUserParamsSchema, GetUsersParamsSchema, getUser, getUsers };
-export type { GetUserParams, GetUsersParams };
+
+export { GetUserParamsSchema, GetUsersFuzzyParamsSchema, GetUsersParamsSchema, getUser, getUsers, getUsersFuzzy };
+export type { GetUserParams, GetUsersFuzzyParams, GetUsersParams };
 

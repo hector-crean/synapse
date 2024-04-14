@@ -10,11 +10,11 @@ export function ToolbarAvatars() {
   return (
     <div className={styles.toolbarAvatars}>
       {currentUser && (
-        <Avatar src={currentUser.info.avatar} name={currentUser.info.name} />
+        <Avatar src={currentUser?.info?.avatar ?? ''} name={currentUser?.info?.name ?? ''} />
       )}
 
       {users.map(({ connectionId, info }) => {
-        return <Avatar key={connectionId} src={info.avatar} name={info.name} />;
+        return <Avatar key={connectionId} src={info?.avatar ?? ''} name={info?.name ?? ''} />;
       })}
     </div>
   );

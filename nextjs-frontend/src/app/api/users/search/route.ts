@@ -1,4 +1,4 @@
-import { prisma } from "@/prisma-client";
+import { getUsersFuzzy } from "@/lib/server/users/get";
 import { NextRequest, NextResponse } from "next/server";
 
 /**
@@ -10,11 +10,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const text = searchParams.get("text") as string;
 
-  const filteredUserIds = getUsers()
-    .filter((user) => {
-      return user.info.name.toLowerCase().includes(text.toLowerCase());
-    })
-    .map((user) => user.id);
+  const users = await getUsersFuzzy({text});
 
-  return NextResponse.json(filteredUserIds);
+  return NextResponse.json(users.map((user) => user.id));
 }

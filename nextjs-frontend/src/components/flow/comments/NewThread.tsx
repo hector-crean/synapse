@@ -29,9 +29,12 @@ type Props = {
 };
 
 export function NewThread({ children }: Props) {
+
+
   const [creatingCommentState, setCreatingCommentState] = useState<
     "placing" | "placed" | "complete"
   >("complete");
+  
   const createThread = useCreateThread();
   const maxZIndex = useMaxZIndex();
 
@@ -48,7 +51,7 @@ export function NewThread({ children }: Props) {
   allowComposerRef.current = allowUseComposer;
 
   const self = useSelf((me) => me.id);
-  const { user } = useUser(self);
+  const { user } = useUser(self ??  '');
 
   useEffect(() => {
     if (creatingCommentState === "complete") {
@@ -201,8 +204,8 @@ export function NewThread({ children }: Props) {
 
       const {
         cursorSelectors = [],
-        cursorX = -10000,
-        cursorY = -10000,
+        x = -10000,
+        y = -10000,
       } = getCoordsFromPointerEvent(lastPointerEvent.current, {
         x: 0,
         y: 0,
@@ -212,8 +215,8 @@ export function NewThread({ children }: Props) {
         body,
         metadata: {
           cursorSelectors: cursorSelectors.join(","),
-          cursorX,
-          cursorY,
+          cursorX: x,
+          cursorY: y,
           resolved: false,
           zIndex: maxZIndex + 1,
         },

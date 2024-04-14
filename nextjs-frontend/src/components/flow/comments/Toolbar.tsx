@@ -1,6 +1,5 @@
 "use client";
 
-import { NewThread } from "@/components/flow/comments/NewThread";
 import { Sidebar } from "@/components/flow/comments/Sidebar";
 import { ToolbarAvatars } from "@/components/flow/comments/ToolbarAvatars";
 import { PlusIcon } from "@/components/icons/PlusIcon";
@@ -23,11 +22,14 @@ export function Toolbar({ ...props }) {
     >
       <div className={styles.toolbar}>
         <div className={styles.toolbarActions}>
-          <NewThread>
             <Button variant="ghost" square>
               <PlusIcon width={12} height={12} />
             </Button>
-          </NewThread>
+          {/* <NewThread>
+            <Button variant="ghost" square>
+              <PlusIcon width={12} height={12} />
+            </Button>
+          </NewThread> */}
         </div>
         <div className={styles.toolbarSeparator} />
         <ToolbarAvatars />

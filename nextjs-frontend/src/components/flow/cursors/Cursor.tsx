@@ -9,6 +9,7 @@ enum CursorMode {
   Chat,
   ReactionSelector,
   Reaction,
+  CreateCommment,
 }
 
 type CursorState =
@@ -27,7 +28,10 @@ type CursorState =
     mode: CursorMode.Reaction;
     reaction: string;
     isPressed: boolean;
-  };
+  } | {
+    mode: CursorMode.CreateCommment,
+    action: 'placing'|'placed'|'complete'
+  }
 
 type Props = {
   color: string;
@@ -60,15 +64,10 @@ export function CursorComponent({ color, viewport, connectionId, flowToScreenPos
     }
   }, [cursorFlowPosition, viewport, flowToScreenPosition])
 
-  if (!cursorFlowPosition) return null;
 
 
-  // const coords = {
-  //   x: cursorFlowPosition.x ,
-  //   y: cursorFlowPosition.y 
-  // }
 
-
+  
 
 
   // const cursorClientPosition = flowToScreenPosition({x: cursorFlowPosition.x, y: cursorFlowPosition.y})

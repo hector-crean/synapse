@@ -44,11 +44,11 @@ const client = createClient({
   // Find a list of users that match the current search term
   resolveMentionSuggestions: async ({ text }) => {
     const response = await fetch(
-      setExampleId(`/api/users/search?text=${encodeURIComponent(text)}`)
+      `/api/users/search?text=${encodeURIComponent(text)}`
     );
 
     if (!response.ok) {
-      throw new Error("Problem resolving mention suggestions");
+      throw new Error("Problem resolving user");
     }
 
     const userIds = await response.json();

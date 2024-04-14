@@ -7,7 +7,6 @@ import {
 } from "@xyflow/react";
 import styles from "./RichTextNode.module.css";
 
-import { RichText } from "@/components/rich-text/RichText";
 import { Content } from "@tiptap/react";
 import { ConcreteNode } from "../types";
 
@@ -31,11 +30,11 @@ const RichTextNode = (props: NodeProps<RichTextNodeType>) => {
     <>
       <NodeResizer minWidth={200} minHeight={200} isVisible={props.selected} />
       <div className={styles.rich_text_node}>
-        <RichText
+        {/* <RichText
           id={props.id}
           text={props.data.text}
           setContent={setContentHandler}
-        />
+        /> */}
       </div>
 
       <Handle
@@ -67,3 +66,4 @@ const RichTextNode = (props: NodeProps<RichTextNodeType>) => {
 };
 
 export { RichTextNode, type RichTextNodeType };
+
