@@ -3,7 +3,8 @@ import { client } from "./client";
 
 
 export type ThreadMetadata = {
-  color: string;
+  resolved: boolean;
+  text: string 
 };
 
 // Presence represents the properties that exist on every user in the Room
@@ -69,11 +70,16 @@ export const {
     useThreads,
     useCreateThread,
     useCreateComment,
+    useUser
     
     
   },
   
+  
 } = createRoomContext<Presence, Storage, UserMeta, RoomEvent, ThreadMetadata>(client);
 
 
+
+
 export type { Presence, RoomEvent, Storage, UserMeta };
+

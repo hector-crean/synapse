@@ -22,9 +22,11 @@ import "@blocknote/react/style.css";
 import LiveblocksProvider from "@liveblocks/yjs";
 import { useCallback, useEffect, useState } from "react";
 import * as Y from "yjs";
+import { InboxPopover } from "../inbox/Inbox";
 import { Button } from "../ui/button";
 import { Avatars } from "./Avatars";
-import { ThreadButton, ThreadComposer, ThreadComposerState } from "./inline-toolbar/ThreadButton";
+import { ThreadButton, ThreadComposer, ThreadComposerState } from "./ThreadButton";
+import { blocknoteSchema } from "./spans";
 
 
 
@@ -81,6 +83,7 @@ function BlockNote({ doc, provider }: EditorProps) {
   const userInfo = useSelf((me) => me.info);
 
   const editor: BlockNoteEditor = useCreateBlockNote({
+    schema: blocknoteSchema,
     collaboration: {
       provider,
       // Where to store BlockNote data in the Y.Doc:
@@ -90,6 +93,7 @@ function BlockNote({ doc, provider }: EditorProps) {
         name: userInfo.name,
         color: userInfo.color,
       },
+
 
     },
 
@@ -124,6 +128,7 @@ function BlockNote({ doc, provider }: EditorProps) {
             <MoonIcon style={{ width: "18px" }} />
           )}
         </Button>
+        <InboxPopover />
         <Avatars />
       </div>
       <div className="flex flex-row w-full h-full">
@@ -188,10 +193,10 @@ function BlockNote({ doc, provider }: EditorProps) {
               )} />
           </BlockNoteView>
         </div>
-        <div className="flex flex-col h-full  bg-gray-600 flex-1">
+        <div className="flex flex-col h-full bg-gray-900  items-start justify-start gap-2 p-2 overflow-y-scroll">
           <>
             {threads.map((thread) => (
-              <ThreadComposer key={thread.id} thread={thread} state={composerState} setState={setComposerState} />
+              <ThreadComposer key={thread.id} thread={thread} />
             ))}
           </>
 

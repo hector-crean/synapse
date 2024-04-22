@@ -10,8 +10,12 @@
 
 html,
 body {
+  --radius: 6px;
+
   background: white;
-  color: var(--color-text);
+  color: black;
+
+  
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
     Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
   overflow: hidden;
@@ -26,36 +30,9 @@ body,
   min-height: 100vh;
 }
 
-html.hide-cursor {
-  cursor: none !important;
-}
 
-.button {
-  background-color: #7af167;
-  color: black;
-  border-radius: 9999px;
-  height: 2.5rem;
-  padding: 0 20px;
-  font-weight: 500;
-  display: inline-flex;
-  align-items: center;
-}
 
-.button-secondary {
-  background-color: white;
-}
 
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-}
 
 [data-scrollbar="thin"] {
   scrollbar-width: thin;

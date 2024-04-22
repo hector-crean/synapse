@@ -1,7 +1,8 @@
-import { createClient } from "@liveblocks/client";
+"use client";
+import { createClient, } from "@liveblocks/client";
+import { createLiveblocksContext } from "@liveblocks/react";
 
 export const ENDPOINT_BASE_URL = "/api/liveblocks" as const;
-
 
 
 
@@ -54,9 +55,14 @@ const client = createClient({
     const userIds = await response.json();
     return userIds;
   },
+
 });
 
 
+const { LiveblocksProvider, useInboxNotifications, useMarkAllInboxNotificationsAsRead, useMarkInboxNotificationAsRead, useUnreadInboxNotificationsCount,  } = createLiveblocksContext(client)
 
-export { client };
+
+
+export { LiveblocksProvider, client, useInboxNotifications, useMarkAllInboxNotificationsAsRead, useMarkInboxNotificationAsRead, useUnreadInboxNotificationsCount };
+
 

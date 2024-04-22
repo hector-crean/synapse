@@ -30,6 +30,7 @@ import {
 import { signOut } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { InboxPopover } from "../inbox/Inbox";
 import { DocumentFilter } from "./types";
 
 interface HeaderProps {
@@ -119,6 +120,7 @@ const Header = ({ filter }: HeaderProps) => {
           className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
         />
       </div>
+      <InboxPopover />
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
@@ -151,3 +153,4 @@ const Header = ({ filter }: HeaderProps) => {
 };
 
 export { Header };
+
