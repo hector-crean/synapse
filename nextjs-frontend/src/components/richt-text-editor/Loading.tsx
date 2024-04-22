@@ -1,9 +1,8 @@
-import styles from "./Loading.module.css";
 
 export function Loading() {
   return (
-    <div className={styles.loading}>
-      <img src="https://liveblocks.io/loading.svg" alt="Loading" />
+    <div className='absolute w-screen h-screen flex place-content-center place-items-center'>
+      <img className='w-16 w-16 opacity-20' src="https://liveblocks.io/loading.svg" alt="Loading" />
     </div>
   );
 }

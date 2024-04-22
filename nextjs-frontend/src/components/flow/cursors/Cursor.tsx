@@ -4,6 +4,7 @@ import { Viewport, XYPosition } from "@xyflow/react";
 import { motion } from "framer-motion";
 import { memo, useMemo } from "react";
 import styles from './Cursor.module.css';
+
 enum CursorMode {
   Hidden,
   Chat,
@@ -30,7 +31,7 @@ type CursorState =
     isPressed: boolean;
   } | {
     mode: CursorMode.CreateCommment,
-    action: 'placing'|'placed'|'complete'
+    action: 'placing' | 'placed' | 'complete'
   }
 
 type Props = {
@@ -62,12 +63,7 @@ export function CursorComponent({ color, viewport, connectionId, flowToScreenPos
 
       return coords
     }
-  }, [cursorFlowPosition, viewport, flowToScreenPosition])
-
-
-
-
-  
+  }, [cursorFlowPosition, viewport])
 
 
   // const cursorClientPosition = flowToScreenPosition({x: cursorFlowPosition.x, y: cursorFlowPosition.y})

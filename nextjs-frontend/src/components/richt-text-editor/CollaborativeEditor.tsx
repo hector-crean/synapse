@@ -1,23 +1,55 @@
 "use client";
 
 import { MoonIcon, SunIcon } from "@/icons";
-import { useRoom, useSelf } from "@/liveblocks-configs/text-room.config";
-import { Button } from "@/primitives/Button";
+import { Presence, RoomEvent, Storage, UserMeta, useRoom, useSelf, useThreads } from "@/liveblocks-configs/text-room.config";
 import { BlockNoteEditor } from "@blocknote/core";
 import "@blocknote/core/fonts/inter.css";
-import { BlockNoteView, useCreateBlockNote } from "@blocknote/react";
+import {
+  BasicTextStyleButton,
+  BlockNoteView,
+  BlockTypeSelect,
+  ColorStyleButton,
+  FormattingToolbar,
+  FormattingToolbarController,
+  ImageCaptionButton,
+  NestBlockButton,
+  ReplaceImageButton,
+  TextAlignButton,
+  UnnestBlockButton,
+  useCreateBlockNote
+} from "@blocknote/react";
 import "@blocknote/react/style.css";
 import LiveblocksProvider from "@liveblocks/yjs";
 import { useCallback, useEffect, useState } from "react";
 import * as Y from "yjs";
+import { Button } from "../ui/button";
 import { Avatars } from "./Avatars";
-import styles from "./CollaborativeEditor.module.css";
+import { ThreadButton, ThreadComposer, ThreadComposerState } from "./inline-toolbar/ThreadButton";
+
+
+
+enum EditorMode {
+  Edit,
+  Review
+}
+
+
+
+type EditorState =
+  | {
+    mode: EditorMode.Edit;
+  }
+  | {
+    mode: EditorMode.Review;
+
+  }
+
 
 // Collaborative text editor with simple rich text, live cursors, and live avatars
 export function CollaborativeEditor() {
   const room = useRoom();
   const [doc, setDoc] = useState<Y.Doc>();
-  const [provider, setProvider] = useState<any>();
+  const [provider, setProvider] = useState<LiveblocksProvider<Presence, Storage, UserMeta, RoomEvent>>();
 
   // Set up Liveblocks Yjs provider
   useEffect(() => {
@@ -41,7 +73,7 @@ export function CollaborativeEditor() {
 
 type EditorProps = {
   doc: Y.Doc;
-  provider: any;
+  provider: LiveblocksProvider<Presence, Storage, UserMeta, RoomEvent>;
 };
 
 function BlockNote({ doc, provider }: EditorProps) {
@@ -51,17 +83,18 @@ function BlockNote({ doc, provider }: EditorProps) {
   const editor: BlockNoteEditor = useCreateBlockNote({
     collaboration: {
       provider,
-
       // Where to store BlockNote data in the Y.Doc:
       fragment: doc.getXmlFragment("document-store"),
-
       // Information for this user:
       user: {
         name: userInfo.name,
         color: userInfo.color,
       },
+
     },
+
   });
+
 
   const [theme, setTheme] = useState<"light" | "dark">("light");
 
@@ -71,12 +104,17 @@ function BlockNote({ doc, provider }: EditorProps) {
     setTheme(newTheme);
   }, [theme]);
 
+
+  const [composerState, setComposerState] = useState<ThreadComposerState>({ type: 'hidden' })
+
+  const { threads } = useThreads();
+
+
   return (
-    <div className={styles.container}>
-      <div className={styles.editorHeader}>
+    <div className='flex flex-col bg-white absolute top-0 right-0 left-0 bottom-0'>
+      <div className='top-0 right-0 left-0 bottom-0 flex flex-grow-0 flex-shrink-0 justify-between items-start bg-slate-50 p-4 z-50'>
         <Button
-          className={styles.button}
-          variant="subtle"
+          variant='default'
           onClick={changeTheme}
           aria-label="Switch Theme"
         >
@@ -88,12 +126,77 @@ function BlockNote({ doc, provider }: EditorProps) {
         </Button>
         <Avatars />
       </div>
-      <div className={styles.editorPanel}>
-        <BlockNoteView
-          editor={editor}
-          className={styles.editorContainer}
-          theme={theme}
-        />
+      <div className="flex flex-row w-full h-full">
+        <div className='flex flex-col h-full flex-1'>
+          <BlockNoteView
+            editor={editor}
+            formattingToolbar={false}
+            className='relative min-h-full max-w-[900px]'
+            theme={theme}
+
+          >
+            <FormattingToolbarController
+              formattingToolbar={(props) => (
+                <FormattingToolbar>
+                  <BlockTypeSelect key={"blockTypeSelect"} />
+                  <ImageCaptionButton key={"imageCaptionButton"} />
+                  <ReplaceImageButton key={"replaceImageButton"} />
+
+                  <BasicTextStyleButton
+                    basicTextStyle={"bold"}
+                    key={"boldStyleButton"}
+                  />
+                  <BasicTextStyleButton
+                    basicTextStyle={"italic"}
+                    key={"italicStyleButton"}
+                  />
+                  <BasicTextStyleButton
+                    basicTextStyle={"underline"}
+                    key={"underlineStyleButton"}
+                  />
+                  <BasicTextStyleButton
+                    basicTextStyle={"strike"}
+                    key={"strikeStyleButton"}
+                  />
+                  {/* Extra button to toggle code styles */}
+                  <BasicTextStyleButton
+                    key={"codeStyleButton"}
+                    basicTextStyle={"code"}
+                  />
+
+                  <TextAlignButton
+                    textAlignment={"left"}
+                    key={"textAlignLeftButton"}
+                  />
+                  <TextAlignButton
+                    textAlignment={"center"}
+                    key={"textAlignCenterButton"}
+                  />
+                  <TextAlignButton
+                    textAlignment={"right"}
+                    key={"textAlignRightButton"}
+                  />
+
+                  <ColorStyleButton key={"colorStyleButton"} />
+
+                  <NestBlockButton key={"nestBlockButton"} />
+                  <UnnestBlockButton key={"unnestBlockButton"} />
+
+                  <ThreadButton key={'threadButton'} threadComposerState={composerState} setThreadComposerState={setComposerState} />
+
+                </FormattingToolbar>
+              )} />
+          </BlockNoteView>
+        </div>
+        <div className="flex flex-col h-full  bg-gray-600 flex-1">
+          <>
+            {threads.map((thread) => (
+              <ThreadComposer key={thread.id} thread={thread} state={composerState} setState={setComposerState} />
+            ))}
+          </>
+
+
+        </div>
       </div>
     </div>
   );

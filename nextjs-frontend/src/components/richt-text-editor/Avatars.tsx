@@ -1,12 +1,11 @@
 import { useOthers, useSelf } from "@/liveblocks-configs/text-room.config";
-import styles from "./Avatars.module.css";
 
-export function Avatars() {
+const Avatars = () => {
   const users = useOthers();
   const currentUser = useSelf();
 
   return (
-    <div className={styles.avatars}>
+    <div className='flex p-2'>
       {users.map(({ connectionId, info }) => {
         return (
           <Avatar key={connectionId} picture={info.picture} name={info.name} />
@@ -25,14 +24,16 @@ export function Avatars() {
   );
 }
 
-export function Avatar({ picture, name }: { picture: string; name: string }) {
+const Avatar = ({ picture, name }: { picture: string; name: string }) => {
   return (
-    <div className={styles.avatar} data-tooltip={name}>
+    <div className='flex shrink-0 place-content-center relative rounded-full w-9 h-9 bg-gray-500 -ml-3'>
       <img
         src={picture}
-        className={styles.avatar_picture}
-        data-tooltip={name}
+        className={'w-full h-full rounded-full'}
       />
     </div>
   );
 }
+
+
+export { Avatar, Avatars };

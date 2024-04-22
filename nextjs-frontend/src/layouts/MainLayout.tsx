@@ -24,7 +24,7 @@ const MainLayout = ({
 
   const [headerExpanded, setHeaderExpanded] = useState(false);
 
-  const [sidebarOpen, cycleSidebarOpen] = useCycle(true, false);
+  const [sidebarOpen, cycleSidebarOpen] = useCycle(false, true);
 
   return (
     <motion.div className={styles.page_grid_container}>

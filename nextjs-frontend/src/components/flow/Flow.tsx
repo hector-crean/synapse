@@ -56,7 +56,6 @@ import {
   useOthers,
 } from "@/liveblocks-configs/flow-room.config";
 import { throttle } from "lodash";
-import { Comments } from "./comments/Comments";
 import { LiveCursors } from "./cursors/Cursors";
 import { RichTextNode } from "./nodes/RichTextNode";
 import { LiveFlowEdgeType, LiveFlowNodeType } from "./types";
@@ -321,7 +320,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
         lastClickPosition={lastClickPosition}
       >
         <ReactFlow
-          // className={styles.flow_wrapper}
+          className="relative"
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
@@ -367,10 +366,6 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
           />
           <MiniMap zoomable pannable />
           <Controls onSave={onSave} onRestore={onRestore} />
-          {/* <Panel position="top-left">
-            <Sidebar />
-          </Panel> */}
-
           <ConnectionStatus />
           <NodeToolbar
             nodeId={selectedNodes.map((node) => node.id)}
@@ -382,7 +377,6 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
             />
           </NodeToolbar>
           <LiveCursors />
-          <Comments />
         </ReactFlow>
       </NodeContextMenu>
 
@@ -393,5 +387,5 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
 export { Flow };
 export type { FlowProps, FlowState };
 
-  export { edgeTypes, nodeTypes };
+export { edgeTypes, nodeTypes };
 

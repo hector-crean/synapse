@@ -1,8 +1,6 @@
 import { COLORS } from "@/color";
 import { Avatar } from "@/components/avatar/Avatar";
 import { Flow } from "@/components/flow/Flow";
-import { RichTextModal } from "@/components/rich-text/Modal";
-import { Sidebar } from "@/components/sidebar/Sidebar";
 import { MainLayout } from "@/layouts/MainLayout";
 import {
   Presence,
@@ -92,7 +90,7 @@ const FlowRoom = ({ id }: FlowRoomProps) => {
       <MainLayout
         header={<Avatars presence={presence} others={others} />}
         overlay={<></>}
-        sidebar={<Sidebar />}
+        sidebar={<></>}
         footer={<></>}
         cursors={<></>}
         main={
@@ -108,7 +106,6 @@ const FlowRoom = ({ id }: FlowRoomProps) => {
         }
 
       />
-      <RichTextModal />
     </ReactFlowProvider>
   );
 };

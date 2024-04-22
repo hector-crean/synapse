@@ -2,6 +2,9 @@ import { createRoomContext } from "@liveblocks/react";
 import { client } from "./client";
 
 
+export type ThreadMetadata = {
+  color: string;
+};
 
 // Presence represents the properties that exist on every user in the Room
 // and that will automatically be kept in sync. Accessible through the
@@ -54,9 +57,6 @@ export const {
     useEventListener,
     useErrorListener,
     useStorage,
-    useObject,
-    useMap,
-    useList,
     useBatch,
     useHistory,
     useUndo,
@@ -66,5 +66,14 @@ export const {
     useMutation,
     useStatus,
     useLostConnectionListener,
+    useThreads,
+    useCreateThread,
+    useCreateComment,
+    
+    
   },
-} = createRoomContext<Presence, Storage, UserMeta, RoomEvent>(client);
+  
+} = createRoomContext<Presence, Storage, UserMeta, RoomEvent, ThreadMetadata>(client);
+
+
+export type { Presence, RoomEvent, Storage, UserMeta };

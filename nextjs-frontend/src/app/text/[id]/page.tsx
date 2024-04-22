@@ -1,6 +1,6 @@
 "use client";
 
-import { Loading } from "@/components/Loading";
+import { Loading } from "@/components/loading/Loading";
 import { RoomProvider } from "@/liveblocks-configs/text-room.config";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { useSession } from "next-auth/react";
@@ -34,11 +34,11 @@ const Page = () => {
       <RoomProvider
         id={id}
         initialPresence={{
-          cursor: null, 
-          
+          cursor: null,
+
         }}
-        
-       
+
+
       >
         <ClientSideSuspense fallback={<Loading />}>
           {() => <TextRoom id={id} />}
