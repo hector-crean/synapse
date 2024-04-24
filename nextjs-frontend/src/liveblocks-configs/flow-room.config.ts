@@ -3,17 +3,13 @@ import { LiveFlowEdgeType, LiveFlowNodeType } from "@/components/flow/types";
 import { BaseUserMeta, EnsureJson } from "@liveblocks/client";
 import { createRoomContext } from "@liveblocks/react";
 import { WithLiveblocks, liveblocks } from '@liveblocks/zustand';
-import { EdgeChange, NodeChange, applyEdgeChanges, applyNodeChanges } from "@xyflow/react";
+import { EdgeChange, NodeChange, XYPosition, applyEdgeChanges, applyNodeChanges } from "@xyflow/react";
 import { create } from "zustand";
 import { FlowState } from "../components/flow/Flow";
 import { client } from './client';
 
 
-export type AccurateCursorPositions = {
-  cursorSelectors: string[];
-  x: number;
-  y: number;
-};
+
 
 export type DragOffset = {
   x: number;
@@ -32,7 +28,7 @@ type UserMeta = BaseUserMeta
 // and that will automatically be kept in sync. Accessible through the
 // `user.presence` property. Must be JSON-serializable.
 type Presence = {
-  cursor: AccurateCursorPositions | null;
+  cursor: XYPosition | null;
   editingText: `${string}/${string}` | null;
   user: UserMeta
   // ...
@@ -59,12 +55,9 @@ type RoomEvent = {
 // Metadata attached to comments
 export type ThreadMetadata = {
   resolved: boolean;
-  zIndex: number;
-
-  // AccurateCursorPositions["cursorSelectors"].toString()
-  cursorSelectors: string;
-  cursorX: AccurateCursorPositions["x"];
-  cursorY: AccurateCursorPositions["y"];
+  x: number,
+  y: number
+  reactFlowId: string,
 };
 
 

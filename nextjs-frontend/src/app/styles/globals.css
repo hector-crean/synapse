@@ -3,15 +3,26 @@
 @tailwind utilities;
 
 @import "./normalize.css";
-@import "@liveblocks/react-comments/styles.css";
 @import "./comments.css";
+
+@import url("@liveblocks/react-comments/styles.css");
+
+
+:root {
+  /* Waveform total height */
+  --wave-height: 70px;
+
+  /* How far down the waveform the timeline starts */
+  --wave-timeline-modifier: 0.5;
+
+  --radius: 6px;
+
+}
 
 
 
 html,
 body {
-  --radius: 6px;
-
   background: white;
   color: black;
 
@@ -29,6 +40,8 @@ body,
   max-width: 100%;
   min-height: 100vh;
 }
+
+
 
 
 

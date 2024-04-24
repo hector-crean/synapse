@@ -63,7 +63,7 @@ const Dashboard = ({ rooms, filters, createRoom }: DashboardProps) => {
               <div className="flex items-center">
                 <TabsList>
                   {Object.keys(docFilters).map((key) => (
-                    <TabsTrigger value={docFilters["all"].id}>
+                    <TabsTrigger key={key} value={docFilters["all"].id}>
                       <Link
                         href={`${key}`}
                         className="flex h-9 w-12 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
@@ -87,7 +87,7 @@ const Dashboard = ({ rooms, filters, createRoom }: DashboardProps) => {
                       <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                       <DropdownMenuSeparator />
                       {Object.keys(docFilters).map((f) => (
-                        <DropdownMenuCheckboxItem checked={f === filter}>
+                        <DropdownMenuCheckboxItem key={f} checked={f === filter}>
                           <Link
                             href={`/documents/${f}`}
                             className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
@@ -172,7 +172,7 @@ const Dashboard = ({ rooms, filters, createRoom }: DashboardProps) => {
                             <TableCell className="hidden md:table-cell">
                               {Object.entries(room.groupsAccesses).map(
                                 ([group, access]) => (
-                                  <div>
+                                  <div key={`${group}`}>
                                     <strong>{group}: </strong>
                                     <span>{access}</span>
                                   </div>
@@ -182,7 +182,7 @@ const Dashboard = ({ rooms, filters, createRoom }: DashboardProps) => {
                             <TableCell className="hidden md:table-cell">
                               {Object.entries(room.usersAccesses).map(
                                 ([user, access]) => (
-                                  <div>
+                                  <div key={`${user}`}>
                                     <strong>{user}: </strong>
                                     <span>{access}</span>
                                   </div>

@@ -1,48 +1,22 @@
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { ThreadMetadata, useCreateThread, useSelf } from "@/liveblocks-configs/text-room.config";
-import {
-    ToolbarButton,
-    useBlockNoteEditor
-} from "@blocknote/react";
+import { ToastAction } from "@/components/ui/toast";
+import { useToast } from "@/components/ui/use-toast";
+import { ThreadMetadata, useCreateThread, useSelf } from "@/liveblocks-configs/flow-room.config";
 import { ThreadData } from '@liveblocks/client';
 import { ComposerSubmitComment, Thread } from "@liveblocks/react-comments";
 import {
     Composer,
 } from "@liveblocks/react-comments/primitives";
-import { ChatBubbleIcon } from '@radix-ui/react-icons';
+import { XYPosition } from "@xyflow/react";
 import { motion } from 'framer-motion';
 import { SendIcon } from "lucide-react";
 import Link from "next/link";
 import { FormEvent, useCallback } from "react";
-import { ToastAction } from "../ui/toast";
-import { useToast } from "../ui/use-toast";
 import { Mention } from "./Mention";
 import { MentionSuggestions } from "./MentionSuggestions";
 
 // Custom Formatting Toolbar Button to toggle blue text & background color.
 
 
-const ThreadButton = () => {
-    const editor = useBlockNoteEditor();
-    return (
-        <Popover>
-            <PopoverTrigger asChild>
-                <ToolbarButton
-                    mainTooltip={"Add comment"}
-                >
-                    <ChatBubbleIcon />
-                </ToolbarButton>
-            </PopoverTrigger>
-            <PopoverContent className="w-80">
-                <NewThreadComposer selected={editor.getSelectedText()} />
-            </PopoverContent>
-        </Popover>
-    );
-}
 
 
 type ThreadComposerProps = {
@@ -55,9 +29,7 @@ const ThreadComposer = ({ thread }: ThreadComposerProps) => {
         <motion.div
             className="bg-white-100 rounded-md p-4 w-full flex flex-col bg-white"
         >
-            <div className="w-full h-10 ">
-                <span className="bg-yellow-200 text-yellow-800 rounded-sm">{thread.metadata.text}</span>
-            </div>
+
             <Thread<ThreadMetadata> key={thread.id} thread={thread} showActions={'hover'} />
         </motion.div>
 
@@ -70,9 +42,10 @@ const ThreadComposer = ({ thread }: ThreadComposerProps) => {
 
 
 interface NewThreadComposerProps {
-    selected: string;
+    reactFlowId: string,
+    flowPosition: XYPosition
 }
-const NewThreadComposer = ({ selected }: NewThreadComposerProps) => {
+const NewThreadComposer = ({ reactFlowId, flowPosition }: NewThreadComposerProps) => {
 
     const currentUser = useSelf();
     const createThread = useCreateThread();
@@ -88,8 +61,10 @@ const NewThreadComposer = ({ selected }: NewThreadComposerProps) => {
             createThread({
                 body,
                 metadata: {
+                    reactFlowId,
                     resolved: false,
-                    text: selected
+                    x: flowPosition.x,
+                    y: flowPosition.y
                 },
             });
 
@@ -101,14 +76,14 @@ const NewThreadComposer = ({ selected }: NewThreadComposerProps) => {
                 ),
             })
         },
-        [createThread, selected, toast]
+        [createThread, toast, flowPosition]
     );
 
 
     return (
         <Composer.Form
             onComposerSubmit={handleSubmit}
-            className="w-full"
+            className="w-full min-w-52"
         >
             <div className="flex gap-3 items-end">
                 {currentUser && (
@@ -152,5 +127,5 @@ const NewThreadComposer = ({ selected }: NewThreadComposerProps) => {
 
 
 
-export { ThreadButton, ThreadComposer };
+export { NewThreadComposer, ThreadComposer };
 

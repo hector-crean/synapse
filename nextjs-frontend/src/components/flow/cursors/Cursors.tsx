@@ -5,7 +5,7 @@ import {
 } from "@/liveblocks-configs/flow-room.config";
 import { useReactFlow } from "@xyflow/react";
 import { FC } from "react";
-import { Cursor } from "./Cursor";
+import { OtherUserCursor } from "./Cursor";
 
 //https://codesandbox.io/p/devbox/github/liveblocks/liveblocks/tree/main/examples/nextjs-live-cursors?file=%2Fpages%2Findex.tsx
 
@@ -20,7 +20,7 @@ const LiveCursors: FC<LiveCursorsProps> = ({ }) => {
 
   const others = useOthers();
 
-  return others.map(other => <Cursor
+  return others.map(other => <OtherUserCursor
     key={other.connectionId}
     connectionId={other.connectionId}
     viewport={viewport}

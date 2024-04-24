@@ -29,12 +29,11 @@ import {
 } from "@xyflow/react";
 import { motion } from "framer-motion";
 import {
+  CSSProperties,
   MouseEventHandler,
-  PointerEvent,
   useCallback,
   useEffect,
   useMemo,
-  useRef,
   useState
 } from "react";
 import { NodeContextMenu } from "./context-menu/ContextMenu";
@@ -49,14 +48,15 @@ import { ShapeNode } from "./nodes/ShapeNode";
 
 import "@xyflow/react/dist/style.css";
 
-import { useMaxZIndex } from "@/lib/useMaxZIndex";
 import {
-  useCreateThread,
   useMyPresence,
-  useOthers,
+  useOthers
 } from "@/liveblocks-configs/flow-room.config";
-import { throttle } from "lodash";
+import { v4 } from "uuid";
+import { cursorCtr, CursorMode, CursorState, MyCursor } from "./cursors/Cursor";
 import { LiveCursors } from "./cursors/Cursors";
+import { ModeController } from "./modes/ModeController";
+import { CommentNode, CommentNodeType } from "./nodes/CommentNode";
 import { RichTextNode } from "./nodes/RichTextNode";
 import { LiveFlowEdgeType, LiveFlowNodeType } from "./types";
 
@@ -64,6 +64,8 @@ const nodeTypes: NodeTypes = {
   PolymorphicNode: PolymorphicNode,
   ShapeNode: ShapeNode,
   RichTextNode: RichTextNode,
+  CommentNode: CommentNode,
+
 } as const;
 
 const edgeTypes: EdgeTypes = {
@@ -119,6 +121,10 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
     getViewport,
     flowToScreenPosition,
   } = useReactFlow();
+
+
+  const [nativeCursor, setNativeCursor] = useState<CSSProperties['cursor']>('pointer')
+
 
   const [layoutComputed, setLayoutComputed] = useState(true);
   const [isSelectable, setIsSelectable] = useState<boolean>(true);
@@ -241,14 +247,42 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
     y: 0,
   });
 
+  const [cursorState, setCursorState] = useState<CursorState>(cursorCtr.comment())
+
   const onPaneClick: MouseEventHandler = (event) => {
     const position = screenToFlowPosition({
       x: event.clientX,
       y: event.clientY,
     });
 
+    switch (cursorState.mode) {
+      case CursorMode.Commment: {
+        const commentNode: CommentNodeType = {
+          type: 'CommentNode',
+          id: v4(),
+          position: position,
+          data: {
+            color: 'red'
+          }
+        }
+        onAddNodes([commentNode])
+
+      }
+      case CursorMode.Hidden: {
+
+      }
+      case CursorMode.Pan: {
+
+      }
+    }
+
     setLastClickPosition(position);
+
+
   };
+
+
+
 
 
 
@@ -261,41 +295,16 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
 
 
 
-
-
-
   const onCursorMove: MouseEventHandler = useCallback(
-    throttle((event) => {
-
+    (event) => {
       const { x, y } = screenToFlowPosition({ x: Math.round(event.clientX), y: Math.round(event.clientY) }, { snapToGrid: false })
       updateMyPresence({
-        cursor: { x, y, cursorSelectors: [] },
+        cursor: { x, y },
       });
-
-
-    }, 300),
+    },
     [screenToFlowPosition, updateMyPresence]
   );
 
-
-  // thread creation:
-  const createThread = useCreateThread();
-  const maxZIndex = useMaxZIndex();
-  const composerRef = useRef<HTMLDivElement>(null);
-  const [composerCoords, setComposerCoords] = useState<XYPosition | null>(null);
-
-  const dragging = useRef(false);
-  const dragOffset = useRef({ x: 0, y: 0 });
-  const dragStart = useRef({ x: 0, y: 0 });
-
-  const lastPointerEvent = useRef<PointerEvent>();
-  const [allowUseComposer, setAllowUseComposer] = useState(false);
-  const allowComposerRef = useRef(allowUseComposer);
-  allowComposerRef.current = allowUseComposer;
-
-  const onDrag = () => {
-
-  }
 
 
 
@@ -309,7 +318,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
         damping: 10,
         stiffness: 100,
       }}
-      style={{ width: "100%", height: "100%" }}
+      style={{ width: "100%", height: "100%", }}
     >
       <NodeContextMenu
         onCut={() => { }}
@@ -320,6 +329,9 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
         lastClickPosition={lastClickPosition}
       >
         <ReactFlow
+          style={{
+            cursor: nativeCursor
+          }}
           className="relative"
           nodes={nodes}
           edges={edges}
@@ -366,6 +378,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
           />
           <MiniMap zoomable pannable />
           <Controls onSave={onSave} onRestore={onRestore} />
+          <ModeController cursorState={cursorState} setCursorState={setCursorState} />
           <ConnectionStatus />
           <NodeToolbar
             nodeId={selectedNodes.map((node) => node.id)}
@@ -377,6 +390,12 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
             />
           </NodeToolbar>
           <LiveCursors />
+          {cursor && <MyCursor
+            coords={cursor}
+            cursorState={cursorState}
+
+          />}
+
         </ReactFlow>
       </NodeContextMenu>
 

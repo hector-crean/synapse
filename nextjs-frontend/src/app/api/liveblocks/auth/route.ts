@@ -2,18 +2,26 @@
 
 import { liveblocks } from "@/app/api/liveblocks";
 import { auth } from "@/auth";
+import { IUserInfo } from "@liveblocks/node";
 import { User } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { UserSchema } from "../../../../../prisma/generated/zod";
 
 
+export type UserInfo = IUserInfo & {
+  email: string;
+}
 
 
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
 
-  // Anonymous user info
-  let user: User = {
+
+
+  const nextSession = await auth()
+  const result = UserSchema.safeParse(nextSession?.user)
+
+  const user: User = result.success ? result.data : {
     id: "anonymous",
     name: "Anonymous",
     email: 'anon@ymous.com',
@@ -22,14 +30,6 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
   };
 
 
-  const nextSession = await auth()
-  const result = UserSchema.safeParse(nextSession?.user)
-
-  if (result.success) {
-    user = result.data;
-  } else {
-    console.log(result.error)
-  }
 
 
 
@@ -40,16 +40,19 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   // const identify = await liveblocks.identifyUser(user.email);
 
+  
+  const userInfo: UserInfo = {
+    name: user.name ?? 'Unknown',
+    avatar: user.image ?? '',
+    id: user.id,
+    email: user.email,
+  }
 
   // Start an auth session inside your endpoint
   const session = liveblocks.prepareSession(
     user.email,
     {
-      userInfo: {
-        name: user.name ?? 'unknown',
-        avatar: user.image ?? ''
-        
-      }
+      userInfo: userInfo
     }
   );
 

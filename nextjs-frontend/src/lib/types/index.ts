@@ -15,7 +15,7 @@ const RoomAccessesSchema = z.record(RoomPermissionSchema);
 type RoomAccessesType = z.infer<typeof RoomAccessesSchema>;
 
 
-const RoomTypeSchema = z.enum(["text", "whiteboard", "flow"])
+const RoomTypeSchema = z.enum(["text", "whiteboard", "flow", "audio"])
 type RoomType = z.infer<typeof RoomTypeSchema>
 
 const RoomMetadataSchema = z.object({ type: RoomTypeSchema })

@@ -11,6 +11,7 @@ import { ReactNode, memo } from "react";
 import { shallow } from "zustand/shallow";
 import styles from "./ControlBar.module.css";
 
+import { Button } from "@/components/ui/button";
 import {
   DownloadIcon,
   GroupIcon,
@@ -20,7 +21,6 @@ import {
   PlusIcon,
   ResetIcon,
 } from "@radix-ui/react-icons";
-import { Tool } from "../tool/Tool";
 
 const selector = (s: ReactFlowState) => ({
   isInteractive: s.nodesDraggable || s.nodesConnectable || s.elementsSelectable,
@@ -119,61 +119,61 @@ function ControlsComponent({
       data-testid="rf__controls"
       aria-label={ariaLabel}
     >
-      <Tool
+      <Button
         onPointerDown={onSave}
         title="Save"
         aria-label="Save"
         disabled={false}
       >
         <DownloadIcon />
-      </Tool>
-      <Tool
+      </Button>
+      <Button
         onPointerDown={onRestore}
         title="Restore"
         aria-label="Restore"
         disabled={false}
       >
         <ResetIcon />
-      </Tool>
+      </Button>
       {showZoom && (
         <>
-          <Tool
+          <Button
             onPointerDown={onZoomInHandler}
             title="zoom in"
             aria-label="zoom in"
             disabled={maxZoomReached}
           >
             <PlusIcon />
-          </Tool>
-          <Tool
+          </Button>
+          <Button
             onPointerDown={onZoomOutHandler}
             title="zoom out"
             aria-label="zoom out"
             disabled={minZoomReached}
           >
             <MinusIcon />
-          </Tool>
+          </Button>
         </>
       )}
       {showFitView && (
-        <Tool
+        <Button
           onPointerDown={onFitViewHandler}
           title="fit view"
           aria-label="fit view"
           disabled={false}
         >
           <GroupIcon />
-        </Tool>
+        </Button>
       )}
       {showInteractive && (
-        <Tool
+        <Button
           onPointerDown={onToggleInteractivity}
           title="toggle interactivity"
           aria-label="toggle interactivity"
           disabled={false}
         >
           {isInteractive ? <LockOpen1Icon /> : <LockClosedIcon />}
-        </Tool>
+        </Button>
       )}
       {children}
     </Panel>

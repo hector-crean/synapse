@@ -40,7 +40,7 @@ export default async function RootLayout({
           type="image/png"
         />
       </head>
-      <body className={inter.className}>
+      <body className="bg-neutral-50 text-neutral-900 antialiased overflow-y-scroll">
         <SessionProvider session={session}>
           <LiveblocksProvider>
             <ReactQueryClientProvider>

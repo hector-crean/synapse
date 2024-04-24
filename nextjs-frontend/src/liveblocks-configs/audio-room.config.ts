@@ -1,19 +1,16 @@
-import { UserInfo } from "@/app/api/liveblocks/auth/route";
 import { createRoomContext } from "@liveblocks/react";
 import { client } from "./client";
 
 
-export type ThreadMetadata = {
-  resolved: boolean;
-  text: string 
-};
 
 // Presence represents the properties that exist on every user in the Room
 // and that will automatically be kept in sync. Accessible through the
 // `user.presence` property. Must be JSON-serializable.
+export type PresenceStates = "playing" | "seeking" | "paused";
+
 type Presence = {
-  cursor: { x: number; y: number } | null;
-  // ...
+  state: PresenceStates;
+  time: number;
 };
 
 // Optionally, Storage represents the shared document that persists in the
@@ -25,14 +22,16 @@ type Storage = {
   // ...
 };
 
-
-
 // Optionally, UserMeta represents static/readonly metadata on each user, as
 // provided by your own custom auth back end (if used). Useful for data that
 // will not change during a session, like a user's name or avatar.
-type UserMeta = {
+export type UserMeta = {
   id: string; // Accessible through `user.id`
-  info: UserInfo; // Accessible through `user.info`
+  info: {
+    name: string;
+    color: string;
+    avatar: string;
+  }; // Accessible through `user.info`
 };
 
 // Optionally, the type of custom events broadcast and listened to in this
@@ -42,9 +41,18 @@ type RoomEvent = {
   // ...
 };
 
+export type ThreadMetadata = {
+  resolved: boolean;
+  time: number | -1;
+  timePercentage: number | -1;
+};
+
 export const {
   suspense: {
     RoomProvider,
+    useThreads,
+    useCreateThread,
+    useUser,
     useRoom,
     useMyPresence,
     useUpdateMyPresence,
@@ -57,6 +65,9 @@ export const {
     useEventListener,
     useErrorListener,
     useStorage,
+    useObject,
+    useMap,
+    useList,
     useBatch,
     useHistory,
     useUndo,
@@ -66,19 +77,7 @@ export const {
     useMutation,
     useStatus,
     useLostConnectionListener,
-    useThreads,
-    useCreateThread,
-    useCreateComment,
-    useUser
-    
-    
   },
-  
-  
-} = createRoomContext<Presence, Storage, UserMeta, RoomEvent, ThreadMetadata>(client);
-
-
-
-
-export type { Presence, RoomEvent, Storage, UserMeta };
-
+} = createRoomContext<Presence, Storage, UserMeta, RoomEvent, ThreadMetadata>(
+  client
+);
