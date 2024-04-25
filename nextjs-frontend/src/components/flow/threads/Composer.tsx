@@ -6,7 +6,6 @@ import { ComposerSubmitComment, Thread } from "@liveblocks/react-comments";
 import {
     Composer,
 } from "@liveblocks/react-comments/primitives";
-import { XYPosition } from "@xyflow/react";
 import { motion } from 'framer-motion';
 import { SendIcon } from "lucide-react";
 import Link from "next/link";
@@ -43,9 +42,10 @@ const ThreadComposer = ({ thread }: ThreadComposerProps) => {
 
 interface NewThreadComposerProps {
     reactFlowId: string,
-    flowPosition: XYPosition
+    setCommentCreated: (created: boolean) => void;
+
 }
-const NewThreadComposer = ({ reactFlowId, flowPosition }: NewThreadComposerProps) => {
+const NewThreadComposer = ({ reactFlowId, setCommentCreated }: NewThreadComposerProps) => {
 
     const currentUser = useSelf();
     const createThread = useCreateThread();
@@ -63,8 +63,8 @@ const NewThreadComposer = ({ reactFlowId, flowPosition }: NewThreadComposerProps
                 metadata: {
                     reactFlowId,
                     resolved: false,
-                    x: flowPosition.x,
-                    y: flowPosition.y
+                    x: 0,
+                    y: 0
                 },
             });
 
@@ -75,18 +75,20 @@ const NewThreadComposer = ({ reactFlowId, flowPosition }: NewThreadComposerProps
                     <ToastAction altText="Goto schedule to undo">Undo</ToastAction>
                 ),
             })
+
+            setCommentCreated(true)
         },
-        [createThread, toast, flowPosition]
+        [createThread, toast, reactFlowId, setCommentCreated]
     );
 
 
     return (
         <Composer.Form
             onComposerSubmit={handleSubmit}
-            className="w-full min-w-52"
+            className="w-full h-full min-w-52"
         >
             <div className="flex gap-3 items-end">
-                {currentUser && (
+                {/* {currentUser && (
                     <div className="shrink-0 mb-0.5">
                         <img
                             className="rounded-full size-9"
@@ -96,9 +98,9 @@ const NewThreadComposer = ({ reactFlowId, flowPosition }: NewThreadComposerProps
                             alt={currentUser.info.name}
                         />
                     </div>
-                )}
+                )} */}
                 <Composer.Editor
-                    className={"!min-h-10 px-3 py-2 w-full bg-white border border-neutral-200 rounded-lg shadow-sm outline-none"}
+                    className={"px-3 py-2 w-full bg-white border  rounded-lg shadow-sm outline-none"}
                     placeholder="Write a comment…"
                     components={{
                         Mention: (props) => (
@@ -117,7 +119,7 @@ const NewThreadComposer = ({ reactFlowId, flowPosition }: NewThreadComposerProps
                 />
                 <Composer.Submit asChild>
                     <button className="bg-neutral-900 shrink-0 size-10 rounded-full flex items-center justify-center disabled:bg-neutral-200 transition-colors duration-150 ease-out hover:bg-neutral-800 focus:bg-neutral-800">
-                        <SendIcon className="size-4 text-white" />
+                        <SendIcon className="size-4 text-grey" />
                     </button>
                 </Composer.Submit>
             </div>

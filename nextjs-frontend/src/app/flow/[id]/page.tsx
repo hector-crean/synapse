@@ -1,10 +1,12 @@
 "use client";
 
 import { Loading } from "@/components/loading/Loading";
+import { Toaster } from "@/components/ui/toaster";
 import { RoomProvider } from "@/liveblocks-configs/flow-room.config";
 import { ClientSideSuspense } from "@liveblocks/react";
 import { useSession } from "next-auth/react";
 import { useParams } from "next/navigation";
+
 
 import * as z from "zod";
 import { FlowRoom } from "./FlowRoom";
@@ -28,30 +30,27 @@ const Page = () => {
 
   const { data } = useSession();
 
-  const result = NextAuthSchema.safeParse(data?.user);
+  const user = NextAuthSchema.parse(data?.user);
 
-  if (result.success) {
-    return (
-      <RoomProvider
-        id={id}
-        initialPresence={{
-          cursor: null,
+  return (
+    <RoomProvider
+      id={id}
+      initialPresence={{
+        cursor: null,
+        user: {
+          name: user.name ?? "Placeholder",
+          avatar: user.image ?? "",
+        },
+      }}
+      initialStorage={{ nodes: [], edges: [] }}
+    >
+      <ClientSideSuspense fallback={<Loading />}>
+        {() => <FlowRoom id={id} />}
+      </ClientSideSuspense>
+      <Toaster />
 
-          user: {
-            name: result.data.name ?? "Placeholder",
-            avatar: result.data.image ?? "",
-          },
-        }}
-        initialStorage={{ nodes: [], edges: [] }}
-      >
-        <ClientSideSuspense fallback={<Loading />}>
-          {() => <FlowRoom id={id} />}
-        </ClientSideSuspense>
-      </RoomProvider>
-    );
-  } else {
-    return null;
-  }
+    </RoomProvider>
+  );
 };
 
 export default Page;

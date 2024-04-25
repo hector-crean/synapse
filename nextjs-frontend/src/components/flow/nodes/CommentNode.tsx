@@ -1,13 +1,19 @@
 import {
     NodeProps,
-    useViewport,
-    XYPosition
+    useReactFlow,
+    useViewport
 } from "@xyflow/react";
 
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover";
 import { motion } from 'framer-motion';
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { NewThreadComposer } from "../threads/Composer";
 import { ConcreteNode } from "../types";
+
 
 
 const clamp = (value: number, min: number, max: number) => Math.max(min, Math.min(value, max));
@@ -16,30 +22,38 @@ const clamp = (value: number, min: number, max: number) => Math.max(min, Math.mi
 type ThreadCreatorProps = {
     reactFlowId: string,
     size: number,
-    //selected is not the same as dragging etc. 
     selected: boolean;
-    flowPosition: XYPosition
 }
-const ThreadCreator = ({ reactFlowId, size, selected, flowPosition }: ThreadCreatorProps) => {
+const ThreadCreator = ({ reactFlowId, size, selected, }: ThreadCreatorProps) => {
+
+    const [commentCreated, setCommentCreated] = useState(false)
+    const showComposer = useMemo(() => selected && !commentCreated, [selected, commentCreated])
 
     return (
         <>
             <motion.div
-                className={`flex flex-row justify-center items-start w-min h-min`}
+                className={`flex flex-row justify-start items-start w-min h-min gap-4`}
             >
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <motion.div
+                            style={{
+                                transform: `scale(${size}, ${size})`
+                            }}
+                            className={`p-[1px] flex flex-col items-center justify-center w-full h-full aspect-square rounded-tl-full rounded-tr-full rounded-br-full bg-gray-500`}
+                        >
+                            <div className={`w-full h-full rounded-full ${selected ? 'bg-grey-800' : 'bg-blue-200'}`} />
+                        </motion.div>
+                    </PopoverTrigger>
+                    {showComposer && <PopoverContent className="w-80">
+                        <NewThreadComposer
+                            reactFlowId={reactFlowId}
+                            setCommentCreated={setCommentCreated}
+                        />
+                    </PopoverContent>}
+                </Popover>
 
-                <motion.div
-                    style={{
-                        width: `${size}px`,
-                        height: `${size}px`
-                    }}
-                    className={`p-[1px] flex flex-col items-center justify-center w-full h-full aspect-square rounded-tl-full rounded-tr-full rounded-br-full bg-gray-500`}
-                >
-                    <div className={`w-full h-full rounded-full ${selected ? 'bg-red-500' : 'bg-blue-400'}`} style={{
 
-                    }}></div>
-                </motion.div>
-                {selected && <NewThreadComposer reactFlowId={reactFlowId} flowPosition={flowPosition} />}
             </motion.div>
         </>
     );
@@ -49,6 +63,7 @@ const ThreadCreator = ({ reactFlowId, size, selected, flowPosition }: ThreadCrea
 
 type CommentNodeData = {
     color: string;
+    commentCreated: boolean
 };
 
 type CommentNodeType = ConcreteNode<CommentNodeData, "CommentNode">;
@@ -60,30 +75,65 @@ function CommentNode({
     data,
     width,
     height,
-    positionAbsoluteX,
-    positionAbsoluteY,
-
 }: NodeProps<CommentNodeType>) {
-    const { color } = data;
 
-    // Want comments to be a constant size, independent on the viewport zoom etc. 
+    const { setNodes } = useReactFlow()
+    const { color, commentCreated } = data;
     const viewport = useViewport()
-
     const SIZE = 40;
-
     const size = useMemo(() => clamp(Math.round(SIZE / viewport.zoom), 12, Infinity), [SIZE, viewport])
 
-    return (
-        <>
-            {/* <svg width={SIZE / viewport.zoom} height={SIZE / viewport.zoom} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 2C6.48 2 2 6.48 2 12c0 4.41 2.89 8.18 7 9.74V22l2.08-1.11C13.17 20.95 14.53 21 16 21c5.52 0 10-4.48 10-10S21.52 2 16 2h-4z" fill="#5f6368" />
-                <circle cx="8" cy="12" r="1.5" fill="#fff" />
-                <circle cx="12" cy="12" r="1.5" fill="#fff" />
-                <circle cx="16" cy="12" r="1.5" fill="#fff" />
-            </svg> */}
-            <ThreadCreator reactFlowId={id} size={size} selected={selected ?? false} flowPosition={{ x: positionAbsoluteX, y: positionAbsoluteY }} />
 
-        </>
+    const [open, setOpen] = useState(!commentCreated || selected);
+
+    const onOpenChange = (open: boolean) => {
+        if (commentCreated) {
+            setOpen(false)
+        } else {
+            setOpen(open)
+        }
+    }
+
+
+    const updateCommentCreated = useCallback((created: boolean) => {
+        setNodes(nodes => nodes.map(node => {
+            if (node.id === id) {
+                return ({ ...node, data: { ...node.data, commentCreated: created } })
+            } else {
+                return node
+            }
+        }))
+        setOpen(false)
+    }, [id, setNodes])
+
+
+
+
+    return (
+        <motion.div
+            className={`flex flex-row justify-start items-start w-min h-min gap-4`}
+        >
+            <Popover open={open} onOpenChange={onOpenChange}>
+                <PopoverTrigger asChild >
+                    <motion.div
+                        style={{
+                            transform: `scale(${size}, ${size})`
+                        }}
+                        className={`p-[1px] flex flex-col items-center justify-center w-full h-full aspect-square rounded-tl-full rounded-tr-full rounded-br-full ${commentCreated ? 'bg-gray-950' : 'bg-gray-500'}`}
+                    >
+                        <div className={`w-full h-full rounded-full ${selected ? 'bg-grey-800' : 'bg-blue-200'}`} />
+                    </motion.div>
+                </PopoverTrigger>
+                <PopoverContent className="w-80">
+                    <NewThreadComposer
+                        reactFlowId={id}
+                        setCommentCreated={updateCommentCreated}
+                    />
+                </PopoverContent>
+            </Popover>
+
+
+        </motion.div>
     );
 }
 

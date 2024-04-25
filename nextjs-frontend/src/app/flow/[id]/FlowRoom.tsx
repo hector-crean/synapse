@@ -69,11 +69,9 @@ const FlowRoom = ({ id }: FlowRoomProps) => {
 
   const others = useOthers();
   const userCount = others.length;
-
   const [presence] = useMyPresence();
 
   // Update cursor coordinates on pointer move
-
 
   if (isStorageLoading) {
     return (

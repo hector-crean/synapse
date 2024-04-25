@@ -261,8 +261,10 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
           type: 'CommentNode',
           id: v4(),
           position: position,
+          selected: true,
           data: {
-            color: 'red'
+            color: 'red',
+            commentCreated: false,
           }
         }
         onAddNodes([commentNode])
