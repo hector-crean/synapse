@@ -3,9 +3,12 @@ import {
 } from "@xyflow/react";
 import { Dispatch, memo, SetStateAction } from "react";
 
-import { Button } from "@/components/ui/button";
+import {
+    ToggleGroup,
+    ToggleGroupItem,
+} from "@/components/ui/toggle-group";
+import { ChatBubbleIcon, HandIcon } from "@radix-ui/react-icons";
 import { cursorCtr, CursorState } from "../cursors/Cursor";
-
 
 export type ModeControllerProps = {
     cursorState: CursorState,
@@ -25,22 +28,31 @@ function ModeControllerComponent({
             position={'top-left'}
             data-testid="rf__controls"
         >
-            <Button
-                onPointerDown={() => setCursorState(cursorCtr.comment)}
-                title="Save"
-                aria-label="Save"
-                disabled={false}
-            >
-                Comment
-            </Button>
-            <Button
-                onPointerDown={() => setCursorState(cursorCtr.pan)}
-                title="Save"
-                aria-label="Save"
-                disabled={false}
-            >
-                Pan
-            </Button>
+
+
+            <ToggleGroup value={cursorState.mode} type='single' onValueChange={(value) => {
+                switch (value) {
+                    case 'Pan':
+                        setCursorState(cursorCtr.pan)
+                        break;
+                    case 'Commment':
+                        setCursorState(cursorCtr.comment)
+                        break;
+                    default:
+                        break;
+
+                }
+            }}>
+                <ToggleGroupItem value="Pan" aria-label="Toggle bold" className="bg-white text-black-950">
+                    <HandIcon />
+                </ToggleGroupItem>
+                <ToggleGroupItem value="Comment" aria-label="Toggle italic" className="bg-white text-black-950">
+                    <ChatBubbleIcon />
+
+                </ToggleGroupItem>
+
+            </ToggleGroup>
+
 
         </Panel>
     );

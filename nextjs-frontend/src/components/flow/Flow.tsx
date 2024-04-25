@@ -1,15 +1,13 @@
 "use client";
 
+import { Threads } from '@/components/flow/threads/Thread';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
-  addEdge,
   Background,
   BackgroundVariant,
   ConnectionLineType,
   Edge,
   EdgeTypes,
-  getConnectedEdges,
-  getIncomers,
-  getOutgoers,
   MarkerType,
   MiniMap,
   Node,
@@ -21,12 +19,18 @@ import {
   OnNodesDelete,
   OnSelectionChangeFunc,
   PanOnScrollMode,
+  Panel,
   Position,
   ReactFlow,
   SelectionMode,
-  useReactFlow,
-  XYPosition
+  XYPosition,
+  addEdge,
+  getConnectedEdges,
+  getIncomers,
+  getOutgoers,
+  useReactFlow
 } from "@xyflow/react";
+
 import { motion } from "framer-motion";
 import {
   CSSProperties,
@@ -36,11 +40,11 @@ import {
   useMemo,
   useState
 } from "react";
+import "./Flow.css";
 import { NodeContextMenu } from "./context-menu/ContextMenu";
 import { Controls } from "./control-bar/ControlBar";
 import { PolymorphicEdge } from "./edges/PolymorphicEdge";
 import { ConnectionStatus } from "./edges/validation/ConnectionStatus";
-import "./Flow.css";
 import useAutoLayout, { LayoutOptions } from "./hooks/useAutoLayout";
 import { NodeToolbarBase } from "./node-toolbar/NodeToolbarBase";
 import { PolymorphicNode } from "./nodes/PolymorphicNode";
@@ -53,7 +57,7 @@ import {
   useOthers
 } from "@/liveblocks-configs/flow-room.config";
 import { v4 } from "uuid";
-import { cursorCtr, CursorMode, CursorState, MyCursor } from "./cursors/Cursor";
+import { CursorState, MyCursor, cursorCtr } from "./cursors/Cursor";
 import { LiveCursors } from "./cursors/Cursors";
 import { ModeController } from "./modes/ModeController";
 import { CommentNode, CommentNodeType } from "./nodes/CommentNode";
@@ -357,7 +361,8 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
           snapGrid={[25, 25]}
           fitViewOptions={{ padding: 0.1 /*nodes: [{ id: '1' }]*/ }}
           attributionPosition="top-right"
-          maxZoom={Infinity}
+          maxZoom={2}
+          minZoom={0.5}
           onDragStart={() => console.log('drag start')}
 
           onPaneMouseMove={onCursorMove}
@@ -378,6 +383,19 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
             variant={BackgroundVariant.Dots}
             style={{ zIndex: -1 }}
           />
+          <Panel position='top-right' className='h-5/6 overflow-y-scroll'>
+            <Tabs defaultValue="Comments" className="w-[400px] ">
+              <TabsList className="grid w-full grid-cols-2">
+                <TabsTrigger value="Comments" className='data-[state=active]:bg-gray-600 data-[state=active]:text-white'>
+                  Comments
+                </TabsTrigger>
+                <TabsTrigger value="Details" className='data-[state=active]:bg-gray-600 data-[state=active]:text-white'>Details</TabsTrigger>
+              </TabsList>
+              <TabsContent value="Comments"> <Threads /></TabsContent>
+              <TabsContent value="Details">TBC.</TabsContent>
+            </Tabs>
+
+          </Panel>
           <MiniMap zoomable pannable />
           <Controls onSave={onSave} onRestore={onRestore} />
           <ModeController cursorState={cursorState} setCursorState={setCursorState} />

@@ -5,21 +5,17 @@ import { motion } from "framer-motion";
 import { memo, useMemo } from "react";
 import styles from './Cursor.module.css';
 
-enum CursorMode {
-  Pan,
-  Hidden,
-  Commment,
-}
+type CursorMode = 'Pan' | 'Hidden' | 'Comment'
 
 type PanCursor = {
-  mode: CursorMode.Pan
+  mode: 'Pan'
 }
 
 type HiddenCursor = {
-  mode: CursorMode.Hidden;
+  mode: 'Hidden'
 };
 type CommentCursor = {
-  mode: CursorMode.Commment,
+  mode: 'Comment'
 };
 
 type CursorState =
@@ -29,11 +25,11 @@ type CursorState =
 
 
 const cursorCtr = {
-  hidden: (): HiddenCursor => ({ mode: CursorMode.Hidden }),
+  hidden: (): HiddenCursor => ({ mode: 'Hidden' }),
   comment: (): CommentCursor => ({
-    mode: CursorMode.Commment,
+    mode: 'Comment'
   }),
-  pan: (): PanCursor => ({ mode: CursorMode.Pan })
+  pan: (): PanCursor => ({ mode: 'Pan' })
 }
 
 
@@ -139,7 +135,7 @@ const MyCursorComponent = ({ cursorState, coords: { x, y } }: MyCursorProps) => 
 
   const CursorShape = useMemo(() => {
     switch (cursorState.mode) {
-      case CursorMode.Pan:
+      case 'Pan':
         return (
           <svg viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -151,7 +147,7 @@ const MyCursorComponent = ({ cursorState, coords: { x, y } }: MyCursorProps) => 
             />
           </svg>
         )
-      case CursorMode.Commment:
+      case 'Comment':
         return (
           <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2C6.48 2 2 6.48 2 12c0 4.41 2.89 8.18 7 9.74V22l2.08-1.11C13.17 20.95 14.53 21 16 21c5.52 0 10-4.48 10-10S21.52 2 16 2h-4z" fill="#5f6368" />
@@ -160,7 +156,7 @@ const MyCursorComponent = ({ cursorState, coords: { x, y } }: MyCursorProps) => 
             <circle cx="16" cy="12" r="1.5" fill="#fff" />
           </svg>
         )
-      case CursorMode.Hidden:
+      case 'Hidden':
         return (
           null
         )

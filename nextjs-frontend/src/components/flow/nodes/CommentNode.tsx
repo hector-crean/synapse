@@ -81,7 +81,7 @@ function CommentNode({
     const { color, commentCreated } = data;
     const viewport = useViewport()
     const SIZE = 40;
-    const size = useMemo(() => clamp(Math.round(SIZE / viewport.zoom), 12, Infinity), [SIZE, viewport])
+    const size = useMemo(() => clamp(Math.round(SIZE / viewport.zoom), 1, Infinity), [SIZE, viewport])
 
 
     const [open, setOpen] = useState(!commentCreated || selected);
