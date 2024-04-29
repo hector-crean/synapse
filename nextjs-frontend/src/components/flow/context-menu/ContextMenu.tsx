@@ -2,6 +2,7 @@ import * as ContextMenu from "@radix-ui/react-context-menu";
 import { ChevronRightIcon } from "@radix-ui/react-icons";
 import { Node, XYPosition } from "@xyflow/react";
 import { ReactNode, useState } from "react";
+import { v4 } from "uuid";
 import { nodeTypes } from "../Flow";
 import { defaultNode } from "../default-nodes";
 import { FlowNodeType } from "../types";
@@ -16,8 +17,8 @@ interface NodeContextMenuProps {
     clientPosition: XYPosition,
     options?:
       | {
-          snapToGrid: boolean;
-        }
+        snapToGrid: boolean;
+      }
       | undefined
   ) => XYPosition;
   children: ReactNode;
@@ -31,14 +32,16 @@ const NodeContextMenu = ({
   onAddNodes,
   screenToFlowPosition,
 }: NodeContextMenuProps) => {
-  const [pos, setPos] = useState<XYPosition>({ x: 0, y: 0 });
+  const [contextMenuClickPosition, setContextMenuClickPosition] = useState<XYPosition>({ x: 0, y: 0 });
 
   return (
     <ContextMenu.Root>
       <ContextMenu.Trigger
         className={styles.ContextMenuTrigger}
-        onPointerDown={(e) =>
-          setPos(screenToFlowPosition({ x: e.clientX, y: e.clientY }))
+        onPointerDown={(e) => {
+          const position = screenToFlowPosition({ x: e.clientX, y: e.clientY })
+          setContextMenuClickPosition(position)
+        }
         }
       >
         {children}
@@ -82,7 +85,7 @@ const NodeContextMenu = ({
                     className={styles.ContextMenuItem}
                     onClick={(e) => {
                       onAddNodes([
-                        defaultNode(node as FlowNodeType["type"], pos),
+                        defaultNode(v4(), node as FlowNodeType["type"], contextMenuClickPosition),
                       ]);
                     }}
                   >

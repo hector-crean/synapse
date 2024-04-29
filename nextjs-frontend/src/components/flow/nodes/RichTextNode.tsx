@@ -5,37 +5,48 @@ import {
   Position,
   useReactFlow,
 } from "@xyflow/react";
-import styles from "./RichTextNode.module.css";
 
-import { Content } from "@tiptap/react";
+import { RichTextEditor } from "@/components/blocknote/Blocknote";
+import { Block } from "@blocknote/core";
 import { ConcreteNode } from "../types";
 
+
 type RichTextNodeData = {
-  text: Content;
+  blocks: Array<Block>;
 };
 
 type RichTextNodeType = ConcreteNode<RichTextNodeData, "RichTextNode">;
 
 const RichTextNode = (props: NodeProps<RichTextNodeType>) => {
-  const instance = useReactFlow();
 
-  const setContentHandler = (draft: Content) => {
+  const { setNodes, updateNodeData } = useReactFlow();
+
+  const setBlocks = (draft: Array<Block>) => {
     const data: RichTextNodeData = {
-      text: draft,
+      blocks: draft,
     };
-    instance.updateNodeData(props.id, data);
+    updateNodeData(props.id, data);
+
+
   };
+
+
+
+
 
   return (
     <>
-      <NodeResizer minWidth={200} minHeight={200} isVisible={props.selected} />
-      <div className={styles.rich_text_node}>
-        {/* <RichText
-          id={props.id}
-          text={props.data.text}
-          setContent={setContentHandler}
-        /> */}
+      <NodeResizer minWidth={200} isVisible={props.selected} />
+      <div className="w-full h-full flex-1 flex flex-col">
+        <RichTextEditor
+          blocks={props.data.blocks}
+          setBlocks={setBlocks}
+        />
       </div>
+
+
+
+
 
       <Handle
         type="source"

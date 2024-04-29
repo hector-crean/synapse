@@ -20,6 +20,21 @@ function ModeControllerComponent({
 
 }: ModeControllerProps) {
 
+    const handleModeChange = (value: string) => {
+        switch (value) {
+            case 'Pan':
+                setCursorState(cursorCtr.pan)
+                break;
+            case 'Comment':
+                setCursorState(cursorCtr.comment)
+                break;
+            default:
+                setCursorState(cursorCtr.pan)
+                break;
+
+        }
+    }
+
 
     return (
         <Panel
@@ -30,25 +45,12 @@ function ModeControllerComponent({
         >
 
 
-            <ToggleGroup value={cursorState.mode} type='single' onValueChange={(value) => {
-                switch (value) {
-                    case 'Pan':
-                        setCursorState(cursorCtr.pan)
-                        break;
-                    case 'Commment':
-                        setCursorState(cursorCtr.comment)
-                        break;
-                    default:
-                        break;
-
-                }
-            }}>
+            <ToggleGroup value={cursorState.mode} type='single' onValueChange={handleModeChange}>
                 <ToggleGroupItem value="Pan" aria-label="Toggle bold" className="bg-white text-black-950">
                     <HandIcon />
                 </ToggleGroupItem>
                 <ToggleGroupItem value="Comment" aria-label="Toggle italic" className="bg-white text-black-950">
                     <ChatBubbleIcon />
-
                 </ToggleGroupItem>
 
             </ToggleGroup>

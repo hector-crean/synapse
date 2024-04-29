@@ -1,14 +1,13 @@
 import { Node, XYPosition } from "@xyflow/react";
 import { FlowNodeType } from "./types";
 
-import { v4 } from 'uuid';
 
-const defaultNode = <T extends FlowNodeType>(type: T['type'], position: XYPosition = { x: 0, y: 0 }): Node => {
+const defaultNode = <T extends FlowNodeType>(id: string, type: T['type'], position: XYPosition = { x: 0, y: 0 }): Node => {
 
     switch (type) {
         case 'RichTextNode':
             return {
-                id: v4(),
+                id,
                 type: "RichTextNode",
                 position,
                 data: {
@@ -19,7 +18,7 @@ const defaultNode = <T extends FlowNodeType>(type: T['type'], position: XYPositi
             }
         case 'ShapeNode':
             return {
-                id: v4(),
+                id,
                 type: "ShapeNode",
                 position,
                 data: {
@@ -32,7 +31,7 @@ const defaultNode = <T extends FlowNodeType>(type: T['type'], position: XYPositi
 
         case 'input':
             return {
-                id: v4(),
+                id,
                 type: 'input',
                 position,
                 data: { label: 'input' },
@@ -41,7 +40,7 @@ const defaultNode = <T extends FlowNodeType>(type: T['type'], position: XYPositi
             }
         case 'output':
             return {
-                id: v4(),
+                id,
                 type: 'output',
                 position,
                 data: { label: 'output' },
@@ -52,7 +51,7 @@ const defaultNode = <T extends FlowNodeType>(type: T['type'], position: XYPositi
         case 'default':
         default:
             return {
-                id: v4(),
+                id,
                 type: 'default',
                 position: { x: 0, y: 0 },
                 data: { label: 'Default' },

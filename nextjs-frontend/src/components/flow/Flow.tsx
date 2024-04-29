@@ -45,7 +45,7 @@ import { NodeContextMenu } from "./context-menu/ContextMenu";
 import { Controls } from "./control-bar/ControlBar";
 import { PolymorphicEdge } from "./edges/PolymorphicEdge";
 import { ConnectionStatus } from "./edges/validation/ConnectionStatus";
-import useAutoLayout, { LayoutOptions } from "./hooks/useAutoLayout";
+import { LayoutOptions } from "./hooks/useAutoLayout";
 import { NodeToolbarBase } from "./node-toolbar/NodeToolbarBase";
 import { PolymorphicNode } from "./nodes/PolymorphicNode";
 import { ShapeNode } from "./nodes/ShapeNode";
@@ -57,6 +57,7 @@ import {
   useOthers
 } from "@/liveblocks-configs/flow-room.config";
 import { v4 } from "uuid";
+import { CommandPalette } from './cmd-palette/CommandPalette';
 import { CursorState, MyCursor, cursorCtr } from "./cursors/Cursor";
 import { LiveCursors } from "./cursors/Cursors";
 import { ModeController } from "./modes/ModeController";
@@ -156,12 +157,14 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
     []
   );
 
-  useAutoLayout(layoutOptions);
+  // useAutoLayout(layoutOptions);
 
   useEffect(() => {
-    const fitted = fitView();
-    setLayoutComputed(fitted);
-  }, [layoutComputed === true, fitView]);
+    if (!layoutComputed) {
+      const fitted = fitView();
+      setLayoutComputed(fitted);
+    }
+  }, [fitView, setLayoutComputed, layoutComputed]);
 
   // const { cut, copy, paste, bufferedNodes } = useCopyPaste();
 
@@ -213,7 +216,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
     };
 
     restoreFlow();
-  }, [setEdges, setNodes, localStorage]);
+  }, [id]);
 
   const [selectedNodes, setSelectedNodes] = useState<Array<Node>>([]);
   const [selectedEdges, setSelectedEdges] = useState<Array<Edge>>([]);
@@ -260,7 +263,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
     });
 
     switch (cursorState.mode) {
-      case CursorMode.Commment: {
+      case 'Comment': {
         const commentNode: CommentNodeType = {
           type: 'CommentNode',
           id: v4(),
@@ -274,10 +277,10 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
         onAddNodes([commentNode])
 
       }
-      case CursorMode.Hidden: {
+      case 'Hidden': {
 
       }
-      case CursorMode.Pan: {
+      case 'Pan': {
 
       }
     }
@@ -372,6 +375,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
           onConnect={onConnectNodes}
           onNodesDelete={onNodesDelete}
           onPaneClick={onPaneClick}
+          onContextMenu={e => { }}
           // onDragOver={onDragOver}
           // onDrop={onDrop}
           defaultEdgeOptions={defaultEdgeOptions}
@@ -418,6 +422,7 @@ function Flow<NodeType extends Node, EdgeType extends Edge>({
 
         </ReactFlow>
       </NodeContextMenu>
+      <CommandPalette />
 
     </motion.div>
   );
