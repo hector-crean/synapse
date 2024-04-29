@@ -2,57 +2,54 @@
 
 import { liveblocks } from "@/app/api/liveblocks";
 import { auth } from "@/auth";
+import { prisma } from "@/prisma-client";
 import { IUserInfo } from "@liveblocks/node";
-import { User } from "@prisma/client";
+import { Group, Organisation } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { UserSchema } from "../../../../../prisma/generated/zod";
+import { User as NextAuthUser } from 'next-auth';
 
 
 export type UserInfo = IUserInfo & {
   email: string;
+  groups: Array<Group>,
+  organisations: Array<Organisation>
 }
 
 
 export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
 
-
+  const DEFAULT_NEXT_AUTH_USER: NextAuthUser = {}
 
   const nextSession = await auth()
-  const result = UserSchema.safeParse(nextSession?.user)
-
-  const user: User = result.success ? result.data : {
-    id: "anonymous",
-    name: "Anonymous",
-    email: 'anon@ymous.com',
-    emailVerified: null,
-    image: null
-  };
+  const nextAuthUser: NextAuthUser = nextSession?.user ?? DEFAULT_NEXT_AUTH_USER
 
 
+  const user = await prisma.user.findUnique({
+    where: {
+        email: nextAuthUser.email ?? 'anonymous@gmail.com'
+    },
+    include: {
+      groups: true,
+      organisations: true
+    }
+  });
 
+  if(user){
+      // Start an auth session inside your endpoint
 
+     const userInfo: UserInfo = { 
+      name: user.name ?? '',
+      avatar: user.image ?? '',
+      email: user.email,
+      groups: user.groups,
+      organisations: user.organisations
+     }
 
-
-  // Get the current user from your database
-  // const user = __getUserFromDB__(req);
-
-
-  // const identify = await liveblocks.identifyUser(user.email);
-
-  
-  const userInfo: UserInfo = {
-    name: user.name ?? 'Unknown',
-    avatar: user.image ?? '',
-    id: user.id,
-    email: user.email,
-  }
-
-  // Start an auth session inside your endpoint
   const session = liveblocks.prepareSession(
     user.email,
     {
-      userInfo: userInfo
+      userInfo
     }
   );
 
@@ -72,4 +69,16 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
   const { body, status } = await session.authorize();
   return new Response(body, { status });
+
+  } else {
+
+
+    return new Response(body, { status });
+  }
+ 
+
+  
+
+  
+
 }

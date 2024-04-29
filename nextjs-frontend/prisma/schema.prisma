@@ -29,6 +29,8 @@ model User {
   accounts      Account[]
   sessions      Session[]
   Authenticator Authenticator[]
+  groups        Group[]        @relation("UserGroup")
+  organisations Organisation[] @relation("UserOrganisation")
 }
 
 model Account {
@@ -77,3 +79,31 @@ model Authenticator {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
+
+model Group {
+  id      String  @id @default(cuid())
+  name    String
+  users   User[]  @relation("UserGroup")
+}
+
+model Organisation {
+  id      String  @id @default(cuid())
+  name    String
+  users   User[]  @relation("UserOrganisation")
+}
+
+model Document {
+    id      String  @id @default(cuid())
+
+}
+
+
+enum DocumentPermission {
+  ROOM_WRITE
+  COMMENTS_WRITE
+  ROOM_READ
+  ROOM_PRESENCE_WRITE
+  COMMENTS_READ
+}
+
+
